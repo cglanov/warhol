@@ -541,7 +541,7 @@
       margin-bottom: 6px;
     }
 
-    /* 5th-Grade Helper Popup (Hover + Right-Click + TTS) */
+    /* 5th-Grade Helper Popup (Right-Click + TTS) */
     #kidHelperPopup {
       position: fixed;
       z-index: 2000;
@@ -595,14 +595,14 @@
 </head>
 <body>
 
-  <header data-help="This is the top bar of your Pop Art Studio. It shows your name, lets you turn hover hints on or off, or switch students.">
+  <header data-help="This is the top bar of your Pop Art Studio. It shows your name and lets you switch students.">
     <div class="brand" data-help="Welcome to Pop Art Studio! Here you will turn your photo into colorful art inspired by Andy Warhol.">
       <span>🎨 Pop Art Studio</span>
       <span class="brand-badge">Warhol Edition</span>
     </div>
     <div class="header-controls">
       <span id="studentBadge" class="pill-info" style="display:none;" data-help="This shows which student is signed in right now.">Student</span>
-      <button id="toggleHoverHelpBtn" class="btn-header" data-help="Click this button to turn hover helper boxes on or off. Right-clicking any button or slider will always show help!">💬 Hover Help: ON</button>
+      <span class="pill-info" data-help="Right-click on any button, slider, or picture to see what it does and hear it read out loud!">🖱️ Right-click anything for help</span>
       <button id="switchUserBtn" class="btn-header" style="display:none;" data-help="Click here if you are a different student and need to pick your own teacher and name.">🔄 Switch Student</button>
     </div>
   </header>
@@ -760,7 +760,7 @@
     </div>
   </div>
 
-  <!-- 5TH-GRADE HELPER POPUP (HOVER + RIGHT-CLICK + TEXT-TO-SPEECH) -->
+  <!-- 5TH-GRADE HELPER POPUP (RIGHT-CLICK + TEXT-TO-SPEECH) -->
   <div id="kidHelperPopup" role="tooltip">
     <div class="helper-top">
       <span>💡 What does this do?</span>
@@ -794,11 +794,10 @@
 
     const state = {
       rosterRows: [],
-      identity: null,       // { teacher, colA, colB, label }
-      studentName: "",      // sanitized first name for file keys
+      identity: null,        // { teacher, colA, colB, label }
+      studentName: "",       // sanitized first name for file keys
       sliderValues: {},
-      baseImageData: null,  // ImageData at 500x500
-      hoverHelpEnabled: true,
+      baseImageData: null,   // ImageData at 500x500
       selectedFavorites: [], // indices 1..6 (up to 4)
       gridCells: new Array(16).fill(null) // stores variation index 1..6 for each of 16 cells
     };
@@ -837,7 +836,7 @@
       for (let i = 1; i <= 6; i++) {
         if (!localStorage.getItem(keyWarhol(i))) return i;
       }
-      return 6; // overwrite slot 6 if all 6 full
+      return 6;
     }
 
     /*****************************************************************
@@ -974,7 +973,6 @@
       document.getElementById("firstNameInput").value = defaultName;
       state.studentName = sanitizeFileName(defaultName);
 
-      // If this student already has an original.png saved, let them jump right in
       const existingOrig = localStorage.getItem(keyOriginal());
       document.getElementById("resumeExistingWrap").style.display = existingOrig ? "block" : "none";
       showScreen("screenUpload");
@@ -1029,7 +1027,6 @@
       const h = cropImg.height * scale;
       ctx.drawImage(cropImg, cropOffsetX, cropOffsetY, w, h);
 
-      // Rule-of-thirds guide lines for 5th graders
       ctx.strokeStyle = "rgba(255, 255, 255, 0.55)";
       ctx.lineWidth = 1.5;
       ctx.beginPath();
@@ -1292,15 +1289,12 @@
         questionEl.textContent = "Make sure your new image is different from your original picture AND different from your earlier saved Warhol images!";
       }
 
-      // Original thumbnail
       thumbsEl.appendChild(makeCompareCard("Original Photo", origDataUrl, false));
 
-      // Previously saved Warhol images
       priorImages.forEach(item => {
         thumbsEl.appendChild(makeCompareCard(item.label, item.url, false));
       });
 
-      // Current candidate image
       thumbsEl.appendChild(makeCompareCard(`New (${keyWarhol(nextSlot)})`, currentDataUrl, true));
 
       document.getElementById("compareConfirmBtn").onclick = () => {
@@ -1333,7 +1327,6 @@
       const container = document.getElementById("gallerySlots");
       container.innerHTML = "";
 
-      // Slot 0: Original
       const origUrl = localStorage.getItem(keyOriginal());
       const origBox = document.createElement("div");
       origBox.className = "slot-box" + (origUrl ? " filled" : "");
@@ -1345,7 +1338,6 @@
         : `<div class="slot-placeholder">?</div><div>Original</div>`;
       container.appendChild(origBox);
 
-      // Slots 1..6: Warhol Variations
       let count = 0;
       for (let i = 1; i <= 6; i++) {
         const url = localStorage.getItem(keyWarhol(i));
@@ -1376,7 +1368,7 @@
      * 8. 4x4 WARHOL ARRAY BUILDER & FINAL DOWNLOAD
      *****************************************************************/
     function openGridBuilder() {
-      state.selectedFavorites = [1, 2, 3, 4]; // pre-select first 4 so student sees an instant 4x4 preview
+      state.selectedFavorites = [1, 2, 3, 4];
       renderFavoritePicker();
       applyGridPattern("diagonal");
       showScreen("screenGrid");
@@ -1414,7 +1406,7 @@
         state.selectedFavorites.splice(idx, 1);
       } else {
         if (state.selectedFavorites.length >= 4) {
-          state.selectedFavorites.shift(); // replace oldest pick so selecting feels effortless
+          state.selectedFavorites.shift();
         }
         state.selectedFavorites.push(slotNum);
       }
@@ -1508,12 +1500,10 @@
     }
 
     /*****************************************************************
-     * 9. 5TH-GRADE HOVER & RIGHT-CLICK POPUP + TEXT-TO-SPEECH
+     * 9. 5TH-GRADE RIGHT-CLICK HELPER POPUP + TEXT-TO-SPEECH
      *****************************************************************/
     const helperPopup = document.getElementById("kidHelperPopup");
     const helperTextEl = document.getElementById("kidHelperText");
-    let hoverTimer = null;
-    let currentHelpTarget = null;
 
     function findHelpElement(el) {
       while (el && el !== document.body) {
@@ -1527,7 +1517,6 @@
       const text = targetEl.getAttribute("data-help");
       if (!text) return;
 
-      currentHelpTarget = targetEl;
       helperTextEl.textContent = text;
       helperPopup.classList.add("visible");
 
@@ -1548,42 +1537,26 @@
 
     function hideKidHelper() {
       helperPopup.classList.remove("visible");
-      currentHelpTarget = null;
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
     }
 
-    // Right-click anywhere shows 5th-grade popup immediately
+    // Right-click anywhere shows 5th-grade popup
     document.addEventListener("contextmenu", e => {
       const helpEl = findHelpElement(e.target);
       if (helpEl) {
         e.preventDefault();
-        clearTimeout(hoverTimer);
         showKidHelper(helpEl, e.clientX, e.clientY);
       }
     });
 
-    // Hovering over elements shows popup after a short pause (if Hover Help is ON)
-    document.addEventListener("mouseover", e => {
-      if (!state.hoverHelpEnabled) return;
-      if (helperPopup.contains(e.target)) return;
-
-      const helpEl = findHelpElement(e.target);
-      if (!helpEl || helpEl === currentHelpTarget) return;
-
-      clearTimeout(hoverTimer);
-      const x = e.clientX;
-      const y = e.clientY;
-      hoverTimer = setTimeout(() => {
-        showKidHelper(helpEl, x, y);
-      }, 650);
-    });
-
-    document.addEventListener("mouseout", e => {
-      const helpEl = findHelpElement(e.target);
-      if (helpEl) {
-        clearTimeout(hoverTimer);
+    // Left-clicking outside the popup closes it
+    document.addEventListener("mousedown", e => {
+      if (e.button === 0 && helperPopup.classList.contains("visible")) {
+        if (!helperPopup.contains(e.target)) {
+          hideKidHelper();
+        }
       }
     });
 
@@ -1607,12 +1580,6 @@
     /*****************************************************************
      * 10. EVENT WIRING & INITIALIZATION
      *****************************************************************/
-    document.getElementById("toggleHoverHelpBtn").onclick = function () {
-      state.hoverHelpEnabled = !state.hoverHelpEnabled;
-      this.textContent = `💬 Hover Help: ${state.hoverHelpEnabled ? "ON" : "OFF"}`;
-      if (!state.hoverHelpEnabled) hideKidHelper();
-    };
-
     document.getElementById("switchUserBtn").onclick = () => {
       localStorage.removeItem("warhol_student_identity");
       state.identity = null;
