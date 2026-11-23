@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pop Art Studio — Warhol Marilyn Print Maker</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --ink: #1e2235;
+      --muted: #5c627a;
+      --pink: #ff2e93;
+      --cyan: #00b8d9;
+      --yellow: #ffd600;
+      --purple: #7c4dff;
+      --green: #00c853;
+      --border: #dfe3f0;
+      --shadow: 0 8px 24px rgba(30, 34, 53, 0.08);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Header */
+    header {
+      background: linear-gradient(90deg, #ff2e93, #7c4dff, #00b8d9);
+      color: #fff;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .brand-badge {
+      background: var(--yellow);
+      color: var(--ink);
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill-info {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-header {
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--ink);
+      padding: 7px 12px;
+      font-size: 0.85rem;
+    }
+
+    .btn-primary {
+      background: var(--pink);
+      color: #fff;
+      padding: 11px 18px;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(255, 46, 147, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--cyan);
+      color: #fff;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+    }
+
+    .btn-success {
+      background: var(--green);
+      color: #fff;
+      padding: 11px 18px;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+    }
+
+    .btn-neutral {
+      background: #e9ecf6;
+      color: var(--ink);
+      padding: 10px 16px;
+      font-size: 0.95rem;
+    }
+
+    /* Screens */
+    main {
+      flex: 1;
+      padding: 20px;
+      max-width: 1320px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--border);
+    }
+
+    .center-card {
+      max-width: 720px;
+      margin: 24px auto;
+      text-align: center;
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+    }
+
+    /* Roster Selection Buttons */
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .roster-btn {
+      background: #f0f4ff;
+      border: 2px solid #cbd5f5;
+      color: var(--ink);
+      padding: 14px 12px;
+      font-size: 1.05rem;
+      border-radius: 14px;
+    }
+
+    .roster-btn:hover {
+      background: var(--yellow);
+      border-color: var(--ink);
+    }
+
+    /* Name & Upload Screen */
+    .input-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 14px 0 22px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"] {
+      font-family: inherit;
+      font-size: 1.1rem;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      width: 260px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .upload-box {
+      border: 3px dashed var(--cyan);
+      background: #f2fcff;
+      border-radius: 16px;
+      padding: 28px;
+      margin-top: 14px;
+    }
+
+    /* Square Cropper */
+    .crop-stage-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    #cropCanvas {
+      border: 4px solid var(--ink);
+      border-radius: 12px;
+      cursor: grab;
+      touch-action: none;
+      background: #222;
+      max-width: 100%;
+    }
+
+    #cropCanvas:active {
+      cursor: grabbing;
+    }
+
+    /* Main Studio Layout */
+    .studio-layout {
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .studio-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Sidebar Sliders */
+    .tools-panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--border);
+    }
+
+    .slider-item {
+      margin-bottom: 11px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: #f9faff;
+      border: 1px solid #eceff8;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--pink);
+      cursor: pointer;
+    }
+
+    .tools-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 2px solid var(--border);
+    }
+
+    /* Right Workspace */
+    .workspace-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .canvas-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .canvas-toolbar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    #editorCanvas {
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 1 / 1;
+      border: 4px solid var(--ink);
+      border-radius: 12px;
+      background: #eee;
+    }
+
+    /* Saved Gallery Strip */
+    .gallery-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--border);
+    }
+
+    .gallery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .slots-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 720px) {
+      .slots-row {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .slot-box {
+      border: 2px dashed #cbd3ea;
+      border-radius: 12px;
+      padding: 6px;
+      text-align: center;
+      background: #fafbfe;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .slot-box.filled {
+      border-style: solid;
+      border-color: var(--purple);
+      background: #fff;
+    }
+
+    .slot-box img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .slot-placeholder {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9aa3bf;
+      font-size: 1.2rem;
+    }
+
+    /* 4x4 Warhol Grid Builder */
+    .grid-builder-wrap {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .grid-builder-wrap {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .fav-pick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .fav-option {
+      border: 3px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+      background: #fff;
+      position: relative;
+    }
+
+    .fav-option.selected {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(255, 46, 147, 0.25);
+    }
+
+    .fav-option img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .fav-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: var(--pink);
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .warhol-4x4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      background: #111;
+      padding: 8px;
+      border-radius: 12px;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .warhol-cell {
+      aspect-ratio: 1 / 1;
+      background: #2b2f42;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .warhol-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 24, 40, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 18px;
+      max-width: 720px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+      text-align: center;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .compare-grid {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin: 18px 0;
+    }
+
+    .compare-item {
+      width: 145px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+      background: #fafbfe;
+    }
+
+    .compare-item.highlight-new {
+      border: 3px solid var(--pink);
+      background: #fff5fa;
+    }
+
+    .compare-item img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 8px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    /* 5th-Grade Helper Popup (Hover + Right-Click + TTS) */
+    #kidHelperPopup {
+      position: fixed;
+      z-index: 2000;
+      background: #fffef0;
+      border: 3px solid var(--ink);
+      border-radius: 16px;
+      padding: 12px 14px;
+      max-width: 300px;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+      display: none;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: var(--ink);
+    }
+
+    #kidHelperPopup.visible {
+      display: block;
+    }
+
+    .helper-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-weight: 800;
+      color: var(--purple);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .tts-btn {
+      background: var(--yellow);
+      color: var(--ink);
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .helper-close {
+      background: transparent;
+      color: var(--muted);
+      font-size: 1rem;
+      padding: 2px 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <header data-help="This is the top bar of your Pop Art Studio. It shows your name, lets you turn hover hints on or off, or switch students.">
+    <div class="brand" data-help="Welcome to Pop Art Studio! Here you will turn your photo into colorful art inspired by Andy Warhol.">
+      <span>🎨 Pop Art Studio</span>
+      <span class="brand-badge">Warhol Edition</span>
+    </div>
+    <div class="header-controls">
+      <span id="studentBadge" class="pill-info" style="display:none;" data-help="This shows which student is signed in right now.">Student</span>
+      <button id="toggleHoverHelpBtn" class="btn-header" data-help="Click this button to turn hover helper boxes on or off. Right-clicking any button or slider will always show help!">💬 Hover Help: ON</button>
+      <button id="switchUserBtn" class="btn-header" style="display:none;" data-help="Click here if you are a different student and need to pick your own teacher and name.">🔄 Switch Student</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- SCREEN 1: TEACHER & STUDENT ROSTER SELECTION -->
+    <section id="screenRoster" class="screen">
+      <div class="card center-card">
+        <h1 data-help="Follow these steps to find your name on your teacher's class list.">👋 Welcome to Pop Art Studio!</h1>
+        <p id="rosterStatus" style="color:var(--muted);" data-help="We are loading your teacher and class list from the class spreadsheet.">Loading class list from Google Sheets...</p>
+
+        <div id="teacherStep" style="display:none;">
+          <h2 data-help="Click the button with your teacher's name on it.">Step 1: Pick Your Teacher</h2>
+          <div id="teacherButtons" class="button-grid"></div>
+        </div>
+
+        <div id="studentStep" style="display:none; margin-top:24px;">
+          <h2 id="studentStepTitle" data-help="Now click the button with your first name and last initial.">Step 2: Pick Your Name</h2>
+          <div id="studentButtons" class="button-grid"></div>
+          <div style="margin-top:16px;">
+            <button id="backToTeachersBtn" class="btn-neutral" data-help="Go back to pick a different teacher.">⬅ Back to Teachers</button>
+          </div>
+        </div>
+
+        <div id="sheetErrorBox" style="display:none; margin-top:18px; padding:14px; background:#fff3f3; border:2px solid #ffb3b3; border-radius:12px;">
+          <p style="margin:0 0 10px;"><strong>Could not load the Google Sheet.</strong> Make sure the spreadsheet sharing is set to <em>"Anyone with the link can view"</em> and has a tab named <code>masterList</code>.</p>
+          <button id="retrySheetBtn" class="btn-secondary" data-help="Try loading the class spreadsheet again.">Try Again</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: ENTER FIRST NAME & UPLOAD IMAGE -->
+    <section id="screenUpload" class="screen">
+      <div class="card center-card">
+        <h1 data-help="First check your first name, then choose a picture from your computer or tablet.">📸 Step 1: Your Name & Photo</h1>
+        <p style="color:var(--muted);" data-help="Your first name is used to name all of your saved art files automatically.">Confirm or type your first name below:</p>
+        <div class="input-row">
+          <input type="text" id="firstNameInput" placeholder="Enter your first name" data-help="Type your first name here. Every picture you save will start with this name!" />
+        </div>
+
+        <div class="upload-box" data-help="Click the button inside this box to pick any photo from your device.">
+          <p style="font-size:1.1rem; font-weight:700; margin-bottom:12px;">Choose a portrait photo (any picture format works!)</p>
+          <input type="file" id="imageUploadInput" accept="image/*" style="display:none;" />
+          <button id="choosePhotoBtn" class="btn-primary" data-help="Click here to open your files and pick a photo to turn into Pop Art.">📁 Choose My Photo</button>
+        </div>
+
+        <div id="resumeExistingWrap" style="display:none; margin-top:20px; padding-top:16px; border-top:2px solid var(--border);">
+          <p style="color:var(--muted); margin-bottom:10px;">You already have a saved original photo!</p>
+          <button id="resumeStudioBtn" class="btn-success" data-help="Jump right back into the Pop Art editor with the photo you already uploaded.">🎨 Go Back to My Studio</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: SQUARE CROPPING WINDOW -->
+    <section id="screenCrop" class="screen">
+      <div class="card center-card">
+        <h1 data-help="Andy Warhol prints are squares! Drag and zoom your photo so your face fits nicely inside the square.">✂️ Make Your Photo a Square</h1>
+        <p style="color:var(--muted);">Drag the picture to center it, and use the zoom slider below.</p>
+        <div class="crop-stage-wrap">
+          <canvas id="cropCanvas" width="360" height="360" data-help="Drag your photo inside this square box to line up your picture."></canvas>
+          <div style="width:320px; max-width:100%;">
+            <label style="font-weight:700; display:block; margin-bottom:6px;">🔍 Zoom Photo</label>
+            <input type="range" id="cropZoomSlider" min="0.5" max="3" step="0.02" value="1" data-help="Slide left to zoom out, or slide right to zoom in closer on your photo." />
+          </div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button id="cancelCropBtn" class="btn-neutral" data-help="Go back and pick a different photo.">Choose Different Photo</button>
+            <button id="confirmCropBtn" class="btn-success" data-help="Save this square picture as your original photo and start adding Warhol colors!">✅ Save Square Original</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: MAIN WARHOL PHOTO EDITOR -->
+    <section id="screenStudio" class="screen">
+      <div class="studio-layout">
+        <!-- LEFT SIDEBAR: 9 ADJUSTMENT SLIDERS + APPLY + SAVE -->
+        <aside class="tools-panel" data-help="These are your Pop Art color sliders! Move them to change how your photo looks.">
+          <h3 style="margin-bottom:12px;" data-help="Move any slider below to change colors, brightness, or cartoon poster effects.">🎛️ Color Sliders</h3>
+          <div id="slidersContainer"></div>
+
+          <div class="tools-actions">
+            <button id="applyBtn" class="btn-secondary" data-help="Click Apply to lock in your current slider changes as the new starting point, so you can keep adjusting the sliders even more!">✨ Apply</button>
+            <button id="saveVariationBtn" class="btn-success" data-help="Click Save when your picture looks awesome and different! It will check your art and save it to your Warhol collection.">💾 Save</button>
+          </div>
+        </aside>
+
+        <!-- RIGHT SIDE: CANVAS + SAVED VARIATIONS GALLERY -->
+        <div class="workspace-panel">
+          <div class="canvas-card">
+            <div class="canvas-toolbar">
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button id="reopenOriginalBtn" class="btn-neutral" data-help="Click here anytime to reload your plain original photo and reset all sliders back to normal.">🖼️ Reopen original.png</button>
+                <button id="changeBasePhotoBtn" class="btn-neutral" data-help="Upload and crop a brand-new starting photo.">📷 New Photo</button>
+              </div>
+              <button id="unlockGridBtn" class="btn-primary" disabled data-help="Save 6 different Warhol versions first! Once you have 6, this button unlocks so you can build your 4 by 4 final poster.">🔒 Create 4x4 Grid (Need 6)</button>
+            </div>
+
+            <canvas id="editorCanvas" width="500" height="500" data-help="This is your art canvas! Watch your picture change live as you move the sliders on the left."></canvas>
+            <p id="fileNamingHint" style="margin:10px 0 0; font-size:0.88rem; color:var(--muted);" data-help="Shows the file name your original picture is saved under."></p>
+          </div>
+
+          <div class="gallery-card" data-help="Here are your saved pictures! You need 6 Warhol versions to unlock the 4 by 4 poster maker.">
+            <div class="gallery-header">
+              <h3 style="margin:0;">🖼️ Your Warhol Collection (<span id="savedCountLabel">0</span>/6 Saved)</h3>
+              <span style="font-size:0.85rem; color:var(--muted);">Make each version look bold and different!</span>
+            </div>
+            <div id="gallerySlots" class="slots-row"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: 4x4 WARHOL GRID BUILDER -->
+    <section id="screenGrid" class="screen">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+          <h1 style="margin:0;" data-help="Pick your 4 favorite Warhol pictures and arrange them in the 4 by 4 grid to make your final masterpiece!">🏆 Final 4x4 Warhol Print Maker</h1>
+          <button id="backToEditorBtn" class="btn-neutral" data-help="Go back to the color sliders if you want to edit your pictures more.">⬅ Back to Editor</button>
+        </div>
+
+        <div class="grid-builder-wrap">
+          <div>
+            <h3 data-help="Click 4 of your 6 saved pictures below to pick your 4 favorites.">1. Pick Your 4 Favorites (<span id="favCountLabel">0</span>/4)</h3>
+            <div id="favPickerGrid" class="fav-pick-grid"></div>
+
+            <h3 style="margin-top:16px;" data-help="Use these buttons to automatically arrange your 4 favorites in cool patterns, or click any square on the right to change it yourself!">2. Arrange Your 4x4 Grid</h3>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
+              <button class="btn-neutral pattern-btn" data-pattern="diagonal" data-help="Arranges your 4 favorites in a diagonal rainbow pattern.">Diagonal Pattern</button>
+              <button class="btn-neutral pattern-btn" data-pattern="rows" data-help="Puts one favorite on each row of the 4 by 4 grid.">Row Pattern</button>
+              <button class="btn-neutral pattern-btn" data-pattern="columns" data-help="Puts one favorite in each column of the 4 by 4 grid.">Column Pattern</button>
+            </div>
+            <p style="font-size:0.88rem; color:var(--muted);">Tip: Click any square in the 4x4 grid to cycle through your 4 favorites!</p>
+
+            <button id="downloadFinalBtn" class="btn-success" style="width:100%; margin-top:10px;" disabled data-help="Click here to download your finished 4 by 4 Warhol poster as one big picture file!">⬇️ Download Final 4x4 PNG</button>
+          </div>
+
+          <div>
+            <div id="warhol4x4Board" class="warhol-4x4" data-help="This is your 4 by 4 Pop Art poster! Click any square to switch which of your 4 favorites is in that spot."></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- COMPARISON POPUP MODAL -->
+  <div id="compareModal" class="modal-backdrop">
+    <div class="modal-box">
+      <h2 id="compareModalTitle">👀 Check Your Artwork!</h2>
+      <p id="compareModalQuestion" style="font-size:1.05rem; color:var(--ink);"></p>
+      <div id="compareThumbnails" class="compare-grid"></div>
+      <div style="display:flex; justify-content:center; gap:14px; margin-top:18px; flex-wrap:wrap;">
+        <button id="compareCancelBtn" class="btn-neutral" data-help="Go back to the sliders so you can change the colors more.">Cancel (Keep Adjusting)</button>
+        <button id="compareConfirmBtn" class="btn-success" data-help="Yes! Save this picture to my Warhol collection.">Yes, Save My Image!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5TH-GRADE HELPER POPUP (HOVER + RIGHT-CLICK + TEXT-TO-SPEECH) -->
+  <div id="kidHelperPopup" role="tooltip">
+    <div class="helper-top">
+      <span>💡 What does this do?</span>
+      <div style="display:flex; align-items:center; gap:4px;">
+        <button id="speakHelpBtn" class="tts-btn" title="Listen out loud">🔊 Listen</button>
+        <button id="closeHelpBtn" class="helper-close" title="Close">✖</button>
+      </div>
+    </div>
+    <div id="kidHelperText"></div>
+  </div>
+
+  <script>
+    /*****************************************************************
+     * 1. CONFIGURATION & STATE
+     *****************************************************************/
+    const SHEET_ID = "1_D06bA-n2N5HMlgQ7N0D_kzaRzy434jnvfm4u2Dkl7E";
+    const SHEET_TAB = "masterList";
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_TAB)}`;
+
+    const SLIDER_SPECS = [
+      { key: "saturation",  label: "Saturation",  min: -100, max: 100, def: 0, help: "Makes colors super bright and bold like neon paint, or turns them gray like a black-and-white photo." },
+      { key: "hue",         label: "Hue",         min: -180, max: 180, def: 0, help: "Spins the color wheel! It can turn blue hair into bright pink, green, or yellow." },
+      { key: "brightness",  label: "Brightness",  min: -100, max: 100, def: 0, help: "Makes your whole picture lighter like turning on a lamp, or darker like turning down the lights." },
+      { key: "contrast",    label: "Contrast",    min: -100, max: 100, def: 0, help: "Makes dark shadows darker and bright spots brighter so your face pops out like a comic book." },
+      { key: "shadow",      label: "Shadow",      min: -100, max: 100, def: 0, help: "Changes only the darkest parts of your picture, like hair and dark outlines." },
+      { key: "highlight",   label: "Highlight",   min: -100, max: 100, def: 0, help: "Changes only the brightest shiny spots on your face and background." },
+      { key: "tint",        label: "Tint",        min: -100, max: 100, def: 0, help: "Shifts colors toward cool green on the left or bright magenta pink on the right." },
+      { key: "temperature", label: "Temperature", min: -100, max: 100, def: 0, help: "Makes your photo feel chilly and blue on the left, or warm and sunny orange on the right." },
+      { key: "posterize",   label: "Posterize",   min: 0,    max: 100, def: 0, help: "Turns smooth photo shading into bold flat paint blocks, just like Andy Warhol's silkscreen prints!" }
+    ];
+
+    const state = {
+      rosterRows: [],
+      identity: null,       // { teacher, colA, colB, label }
+      studentName: "",      // sanitized first name for file keys
+      sliderValues: {},
+      baseImageData: null,  // ImageData at 500x500
+      hoverHelpEnabled: true,
+      selectedFavorites: [], // indices 1..6 (up to 4)
+      gridCells: new Array(16).fill(null) // stores variation index 1..6 for each of 16 cells
+    };
+
+    /*****************************************************************
+     * 2. LOCAL STORAGE HELPERS
+     *****************************************************************/
+    function sanitizeFileName(raw) {
+      const cleaned = String(raw || "").trim().replace(/[^a-zA-Z0-9_-]/g, "_");
+      return cleaned || "student";
+    }
+
+    function keyOriginal() { return `${state.studentName}_original.png`; }
+    function keyWarhol(n)  { return `${state.studentName}_warhol_${n}.png`; }
+    function keyFinal()    { return `${state.studentName}_warhol_final.png`; }
+
+    function safeSaveStorage(key, value) {
+      try {
+        localStorage.setItem(key, value);
+        return true;
+      } catch (e) {
+        alert("Browser storage is full! Try switching students or clearing old browser data.");
+        return false;
+      }
+    }
+
+    function getSavedWarholCount() {
+      let count = 0;
+      for (let i = 1; i <= 6; i++) {
+        if (localStorage.getItem(keyWarhol(i))) count++;
+      }
+      return count;
+    }
+
+    function getNextWarholSlot() {
+      for (let i = 1; i <= 6; i++) {
+        if (!localStorage.getItem(keyWarhol(i))) return i;
+      }
+      return 6; // overwrite slot 6 if all 6 full
+    }
+
+    /*****************************************************************
+     * 3. SCREEN NAVIGATION
+     *****************************************************************/
+    function showScreen(id) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    /*****************************************************************
+     * 4. GOOGLE SHEETS ROSTER CONNECTION
+     *****************************************************************/
+    function cellText(cell) {
+      if (!cell) return "";
+      if (cell.v !== null && cell.v !== undefined) return String(cell.v).trim();
+      if (cell.f !== null && cell.f !== undefined) return String(cell.f).trim();
+      return "";
+    }
+
+    async function loadMasterList() {
+      const statusEl = document.getElementById("rosterStatus");
+      const errBox = document.getElementById("sheetErrorBox");
+      statusEl.style.display = "block";
+      statusEl.textContent = "Loading class list from Google Sheets...";
+      errBox.style.display = "none";
+
+      try {
+        const res = await fetch(SHEET_URL);
+        if (!res.ok) throw new Error("Network error");
+        const rawText = await res.text();
+        const start = rawText.indexOf("{");
+        const end = rawText.lastIndexOf("}");
+        if (start === -1 || end === -1) throw new Error("Invalid sheet response");
+
+        const json = JSON.parse(rawText.substring(start, end + 1));
+        const rows = (json.table && json.table.rows) || [];
+
+        // Filter: Column E (index 4) must equal "3"
+        const valid = [];
+        rows.forEach(r => {
+          const c = r.c || [];
+          const colA = cellText(c[0]);
+          const colB = cellText(c[1]);
+          const colD = cellText(c[3]);
+          const colE = cellText(c[4]);
+          if (colE === "3" && colA && colD) {
+            valid.push({
+              colA,
+              colB,
+              teacher: colD,
+              label: `${colA} ${colB ? colB.charAt(0) : ""}`.trim()
+            });
+          }
+        });
+
+        if (valid.length === 0) {
+          throw new Error("No Grade 3 rows found in masterList.");
+        }
+
+        state.rosterRows = valid;
+        statusEl.style.display = "none";
+        renderTeacherButtons();
+      } catch (err) {
+        console.error(err);
+        statusEl.style.display = "none";
+        errBox.style.display = "block";
+      }
+    }
+
+    function renderTeacherButtons() {
+      const uniqueTeachers = [...new Set(state.rosterRows.map(r => r.teacher))].sort();
+      const container = document.getElementById("teacherButtons");
+      container.innerHTML = "";
+
+      uniqueTeachers.forEach(teacher => {
+        const btn = document.createElement("button");
+        btn.className = "roster-btn";
+        btn.textContent = teacher;
+        btn.setAttribute("data-help", `Click here if ${teacher} is your teacher.`);
+        btn.onclick = () => selectTeacher(teacher);
+        container.appendChild(btn);
+      });
+
+      document.getElementById("teacherStep").style.display = "block";
+      document.getElementById("studentStep").style.display = "none";
+    }
+
+    function selectTeacher(teacher) {
+      const students = state.rosterRows.filter(r => r.teacher === teacher);
+      const container = document.getElementById("studentButtons");
+      container.innerHTML = "";
+      document.getElementById("studentStepTitle").textContent = `Step 2: Pick Your Name (${teacher})`;
+
+      students.forEach(stu => {
+        const btn = document.createElement("button");
+        btn.className = "roster-btn";
+        btn.textContent = stu.label;
+        btn.setAttribute("data-help", `Click this button if you are ${stu.label}.`);
+        btn.onclick = () => selectStudentIdentity(stu);
+        container.appendChild(btn);
+      });
+
+      document.getElementById("teacherStep").style.display = "none";
+      document.getElementById("studentStep").style.display = "block";
+    }
+
+    function selectStudentIdentity(stu) {
+      state.identity = stu;
+      localStorage.setItem("warhol_student_identity", JSON.stringify(stu));
+      enterNameAndUploadStep();
+    }
+
+    function updateHeaderIdentity() {
+      const badge = document.getElementById("studentBadge");
+      const switchBtn = document.getElementById("switchUserBtn");
+      if (state.identity) {
+        badge.style.display = "inline-block";
+        badge.textContent = `👤 ${state.identity.label} (${state.identity.teacher})`;
+        switchBtn.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+        switchBtn.style.display = "none";
+      }
+    }
+
+    /*****************************************************************
+     * 5. NAME ENTRY, PHOTO UPLOAD & SQUARE CROPPER
+     *****************************************************************/
+    function enterNameAndUploadStep() {
+      updateHeaderIdentity();
+      const savedName = localStorage.getItem("warhol_active_first_name");
+      const defaultName = savedName || (state.identity ? state.identity.colA : "");
+      document.getElementById("firstNameInput").value = defaultName;
+      state.studentName = sanitizeFileName(defaultName);
+
+      // If this student already has an original.png saved, let them jump right in
+      const existingOrig = localStorage.getItem(keyOriginal());
+      document.getElementById("resumeExistingWrap").style.display = existingOrig ? "block" : "none";
+      showScreen("screenUpload");
+    }
+
+    let cropImg = null;
+    let cropOffsetX = 0;
+    let cropOffsetY = 0;
+    let cropBaseScale = 1;
+    let cropZoom = 1;
+    let isDraggingCrop = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
+    function openCropperWithFile(file) {
+      const rawName = document.getElementById("firstNameInput").value.trim();
+      if (!rawName) {
+        alert("Please enter your first name before uploading a photo!");
+        document.getElementById("firstNameInput").focus();
+        return;
+      }
+      state.studentName = sanitizeFileName(rawName);
+      localStorage.setItem("warhol_active_first_name", rawName);
+
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          cropImg = img;
+          const canvas = document.getElementById("cropCanvas");
+          cropBaseScale = Math.max(canvas.width / img.width, canvas.height / img.height);
+          cropZoom = 1;
+          document.getElementById("cropZoomSlider").value = "1";
+          cropOffsetX = (canvas.width - img.width * cropBaseScale) / 2;
+          cropOffsetY = (canvas.height - img.height * cropBaseScale) / 2;
+          drawCropCanvas();
+          showScreen("screenCrop");
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function drawCropCanvas() {
+      if (!cropImg) return;
+      const canvas = document.getElementById("cropCanvas");
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const scale = cropBaseScale * cropZoom;
+      const w = cropImg.width * scale;
+      const h = cropImg.height * scale;
+      ctx.drawImage(cropImg, cropOffsetX, cropOffsetY, w, h);
+
+      // Rule-of-thirds guide lines for 5th graders
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.55)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 3, 0); ctx.lineTo(canvas.width / 3, canvas.height);
+      ctx.moveTo((canvas.width * 2) / 3, 0); ctx.lineTo((canvas.width * 2) / 3, canvas.height);
+      ctx.moveTo(0, canvas.height / 3); ctx.lineTo(canvas.width, canvas.height / 3);
+      ctx.moveTo(0, (canvas.height * 2) / 3); ctx.lineTo(canvas.width, (canvas.height * 2) / 3);
+      ctx.stroke();
+    }
+
+    function saveCroppedOriginal() {
+      if (!cropImg) return;
+      const viewCanvas = document.getElementById("cropCanvas");
+      const exportSize = 500;
+      const outCanvas = document.createElement("canvas");
+      outCanvas.width = exportSize;
+      outCanvas.height = exportSize;
+      const octx = outCanvas.getContext("2d");
+
+      const ratio = exportSize / viewCanvas.width;
+      const scale = cropBaseScale * cropZoom * ratio;
+      octx.drawImage(
+        cropImg,
+        cropOffsetX * ratio,
+        cropOffsetY * ratio,
+        cropImg.width * scale,
+        cropImg.height * scale
+      );
+
+      const pngDataUrl = outCanvas.toDataURL("image/png");
+      if (safeSaveStorage(keyOriginal(), pngDataUrl)) {
+        openEditorWithOriginal();
+      }
+    }
+
+    /*****************************************************************
+     * 6. WARHOL PHOTO EDITOR & PIXEL FILTERS
+     *****************************************************************/
+    function buildSlidersUI() {
+      const container = document.getElementById("slidersContainer");
+      container.innerHTML = "";
+      SLIDER_SPECS.forEach(spec => {
+        state.sliderValues[spec.key] = spec.def;
+        const wrap = document.createElement("div");
+        wrap.className = "slider-item";
+        wrap.setAttribute("data-help", spec.help);
+        wrap.innerHTML = `
+          <div class="slider-header">
+            <span>${spec.label}</span>
+            <span id="val_${spec.key}">${spec.def}</span>
+          </div>
+          <input type="range" id="slider_${spec.key}" min="${spec.min}" max="${spec.max}" value="${spec.def}" />
+        `;
+        const input = wrap.querySelector("input");
+        input.addEventListener("input", () => {
+          state.sliderValues[spec.key] = Number(input.value);
+          document.getElementById(`val_${spec.key}`).textContent = input.value;
+          scheduleRender();
+        });
+        container.appendChild(wrap);
+      });
+    }
+
+    function resetSlidersToDefault() {
+      SLIDER_SPECS.forEach(spec => {
+        state.sliderValues[spec.key] = spec.def;
+        const input = document.getElementById(`slider_${spec.key}`);
+        const valEl = document.getElementById(`val_${spec.key}`);
+        if (input) input.value = spec.def;
+        if (valEl) valEl.textContent = spec.def;
+      });
+    }
+
+    function openEditorWithOriginal() {
+      const origUrl = localStorage.getItem(keyOriginal());
+      if (!origUrl) {
+        enterNameAndUploadStep();
+        return;
+      }
+
+      document.getElementById("fileNamingHint").textContent =
+        `Original file: ${keyOriginal()} • Next save: ${keyWarhol(getNextWarholSlot())}`;
+
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.getElementById("editorCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        state.baseImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        resetSlidersToDefault();
+        renderGallerySlots();
+        showScreen("screenStudio");
+      };
+      img.src = origUrl;
+    }
+
+    let renderPending = false;
+    function scheduleRender() {
+      if (renderPending) return;
+      renderPending = true;
+      requestAnimationFrame(() => {
+        renderPending = false;
+        applyFiltersToCanvas(false);
+      });
+    }
+
+    function clamp255(v) {
+      return v < 0 ? 0 : (v > 255 ? 255 : v);
+    }
+
+    function rgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h = 0, s = 0, l = (max + min) / 2;
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return [h, s, l];
+    }
+
+    function hue2rgb(p, q, t) {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    }
+
+    function hslToRgb(h, s, l) {
+      if (s === 0) {
+        const v = l * 255;
+        return [v, v, v];
+      }
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      return [
+        hue2rgb(p, q, h + 1 / 3) * 255,
+        hue2rgb(p, q, h) * 255,
+        hue2rgb(p, q, h - 1 / 3) * 255
+      ];
+    }
+
+    function applyFiltersToCanvas(commitAsNewBase) {
+      if (!state.baseImageData) return;
+      const canvas = document.getElementById("editorCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const src = state.baseImageData.data;
+      const out = ctx.createImageData(canvas.width, canvas.height);
+      const dst = out.data;
+
+      const {
+        saturation, hue, brightness, contrast,
+        shadow, highlight, tint, temperature, posterize
+      } = state.sliderValues;
+
+      const cVal = contrast * 2.55;
+      const contrastFactor = (259 * (cVal + 255)) / (255 * (259 - cVal));
+      const satMult = 1 + saturation / 100;
+      const hueShift = hue / 360;
+      const levels = posterize > 0 ? Math.max(2, Math.round(16 - (posterize / 100) * 14)) : 0;
+      const step = levels > 1 ? 255 / (levels - 1) : 1;
+
+      for (let i = 0; i < src.length; i += 4) {
+        let r = src[i];
+        let g = src[i + 1];
+        let b = src[i + 2];
+
+        // 1. Temperature & Tint
+        r += temperature * 0.65 + tint * 0.25;
+        g -= tint * 0.55;
+        b -= temperature * 0.65 - tint * 0.25;
+
+        // 2. Brightness
+        r += brightness * 1.28;
+        g += brightness * 1.28;
+        b += brightness * 1.28;
+
+        // 3. Contrast
+        r = contrastFactor * (r - 128) + 128;
+        g = contrastFactor * (g - 128) + 128;
+        b = contrastFactor * (b - 128) + 128;
+
+        // 4. Shadows & Highlights
+        const lum = clamp255(0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        const wShadow = Math.pow(1 - lum, 2);
+        const wHigh = Math.pow(lum, 2);
+        const shAdj = shadow * 1.15 * wShadow + highlight * 1.15 * wHigh;
+        r += shAdj;
+        g += shAdj;
+        b += shAdj;
+
+        r = clamp255(r);
+        g = clamp255(g);
+        b = clamp255(b);
+
+        // 5. Hue & Saturation
+        if (hue !== 0 || saturation !== 0) {
+          let [h, s, l] = rgbToHsl(r, g, b);
+          h = (h + hueShift + 1) % 1;
+          s = Math.max(0, Math.min(1, s * satMult));
+          [r, g, b] = hslToRgb(h, s, l);
+        }
+
+        // 6. Posterize
+        if (levels > 0) {
+          r = Math.round(Math.round((r / 255) * (levels - 1)) * step);
+          g = Math.round(Math.round((g / 255) * (levels - 1)) * step);
+          b = Math.round(Math.round((b / 255) * (levels - 1)) * step);
+        }
+
+        dst[i]     = clamp255(r);
+        dst[i + 1] = clamp255(g);
+        dst[i + 2] = clamp255(b);
+        dst[i + 3] = src[i + 3];
+      }
+
+      ctx.putImageData(out, 0, 0);
+
+      if (commitAsNewBase) {
+        state.baseImageData = out;
+        resetSlidersToDefault();
+      }
+    }
+
+    /*****************************************************************
+     * 7. COMPARISON POPUP & SAVING 1..6 WARHOL VARIATIONS
+     *****************************************************************/
+    function openSaveComparisonModal() {
+      const canvas = document.getElementById("editorCanvas");
+      const currentDataUrl = canvas.toDataURL("image/png");
+      const origDataUrl = localStorage.getItem(keyOriginal());
+      const nextSlot = getNextWarholSlot();
+
+      const priorImages = [];
+      for (let i = 1; i < nextSlot; i++) {
+        const url = localStorage.getItem(keyWarhol(i));
+        if (url) priorImages.push({ label: keyWarhol(i), url });
+      }
+
+      const titleEl = document.getElementById("compareModalTitle");
+      const questionEl = document.getElementById("compareModalQuestion");
+      const thumbsEl = document.getElementById("compareThumbnails");
+      thumbsEl.innerHTML = "";
+
+      if (nextSlot === 1) {
+        titleEl.textContent = `Compare Before Saving (${keyWarhol(1)})`;
+        questionEl.textContent = "Look at your original picture and your new picture side by side. Are you sure your new image is different enough from the original?";
+      } else {
+        titleEl.textContent = `Compare Before Saving (${keyWarhol(nextSlot)})`;
+        questionEl.textContent = "Make sure your new image is different from your original picture AND different from your earlier saved Warhol images!";
+      }
+
+      // Original thumbnail
+      thumbsEl.appendChild(makeCompareCard("Original Photo", origDataUrl, false));
+
+      // Previously saved Warhol images
+      priorImages.forEach(item => {
+        thumbsEl.appendChild(makeCompareCard(item.label, item.url, false));
+      });
+
+      // Current candidate image
+      thumbsEl.appendChild(makeCompareCard(`New (${keyWarhol(nextSlot)})`, currentDataUrl, true));
+
+      document.getElementById("compareConfirmBtn").onclick = () => {
+        if (safeSaveStorage(keyWarhol(nextSlot), currentDataUrl)) {
+          document.getElementById("compareModal").classList.remove("open");
+          renderGallerySlots();
+
+          const totalSaved = getSavedWarholCount();
+          if (totalSaved < 6) {
+            alert(`Awesome! Saved as ${keyWarhol(nextSlot)}.\n\nNow let's reopen your original photo so you can create Warhol image #${totalSaved + 1}!`);
+            openEditorWithOriginal();
+          } else {
+            alert(`Woohoo! You saved all 6 Warhol images!\n\nThe "Create 4x4 Grid" button is now unlocked!`);
+            openEditorWithOriginal();
+          }
+        }
+      };
+
+      document.getElementById("compareModal").classList.add("open");
+    }
+
+    function makeCompareCard(caption, src, isNew) {
+      const div = document.createElement("div");
+      div.className = "compare-item" + (isNew ? " highlight-new" : "");
+      div.innerHTML = `<img src="${src}" alt="${caption}" /><div style="font-size:0.78rem; font-weight:700; word-break:break-all;">${caption}</div>`;
+      return div;
+    }
+
+    function renderGallerySlots() {
+      const container = document.getElementById("gallerySlots");
+      container.innerHTML = "";
+
+      // Slot 0: Original
+      const origUrl = localStorage.getItem(keyOriginal());
+      const origBox = document.createElement("div");
+      origBox.className = "slot-box" + (origUrl ? " filled" : "");
+      origBox.setAttribute("data-help", "This is your original square photo. Click it anytime to start fresh from the beginning.");
+      origBox.style.cursor = "pointer";
+      origBox.onclick = openEditorWithOriginal;
+      origBox.innerHTML = origUrl
+        ? `<img src="${origUrl}" alt="Original" /><div>Original</div>`
+        : `<div class="slot-placeholder">?</div><div>Original</div>`;
+      container.appendChild(origBox);
+
+      // Slots 1..6: Warhol Variations
+      let count = 0;
+      for (let i = 1; i <= 6; i++) {
+        const url = localStorage.getItem(keyWarhol(i));
+        if (url) count++;
+        const box = document.createElement("div");
+        box.className = "slot-box" + (url ? " filled" : "");
+        box.setAttribute("data-help", url
+          ? `Saved Warhol image #${i} (${keyWarhol(i)}).`
+          : `Empty slot #${i}. Adjust the sliders and click Save to fill this spot!`);
+        box.innerHTML = url
+          ? `<img src="${url}" alt="Warhol ${i}" /><div>Warhol #${i}</div>`
+          : `<div class="slot-placeholder">#${i}</div><div>Empty</div>`;
+        container.appendChild(box);
+      }
+
+      document.getElementById("savedCountLabel").textContent = count;
+      const unlockBtn = document.getElementById("unlockGridBtn");
+      if (count >= 6) {
+        unlockBtn.disabled = false;
+        unlockBtn.textContent = "🎉 Create 4x4 Grid";
+      } else {
+        unlockBtn.disabled = true;
+        unlockBtn.textContent = `🔒 Create 4x4 Grid (${count}/6)`;
+      }
+    }
+
+    /*****************************************************************
+     * 8. 4x4 WARHOL ARRAY BUILDER & FINAL DOWNLOAD
+     *****************************************************************/
+    function openGridBuilder() {
+      state.selectedFavorites = [1, 2, 3, 4]; // pre-select first 4 so student sees an instant 4x4 preview
+      renderFavoritePicker();
+      applyGridPattern("diagonal");
+      showScreen("screenGrid");
+    }
+
+    function renderFavoritePicker() {
+      const container = document.getElementById("favPickerGrid");
+      container.innerHTML = "";
+      document.getElementById("favCountLabel").textContent = state.selectedFavorites.length;
+
+      for (let i = 1; i <= 6; i++) {
+        const url = localStorage.getItem(keyWarhol(i));
+        if (!url) continue;
+        const favIdx = state.selectedFavorites.indexOf(i);
+        const isSelected = favIdx !== -1;
+
+        const btn = document.createElement("button");
+        btn.className = "fav-option" + (isSelected ? " selected" : "");
+        btn.setAttribute("data-help", `Click to select or unselect Warhol #${i} as one of your 4 favorites.`);
+        btn.innerHTML = `
+          <img src="${url}" alt="Warhol ${i}" />
+          ${isSelected ? `<span class="fav-badge">${favIdx + 1}</span>` : ""}
+          <div style="font-size:0.78rem; margin-top:4px;">Warhol #${i}</div>
+        `;
+        btn.onclick = () => toggleFavorite(i);
+        container.appendChild(btn);
+      }
+
+      document.getElementById("downloadFinalBtn").disabled = state.selectedFavorites.length !== 4;
+    }
+
+    function toggleFavorite(slotNum) {
+      const idx = state.selectedFavorites.indexOf(slotNum);
+      if (idx !== -1) {
+        state.selectedFavorites.splice(idx, 1);
+      } else {
+        if (state.selectedFavorites.length >= 4) {
+          state.selectedFavorites.shift(); // replace oldest pick so selecting feels effortless
+        }
+        state.selectedFavorites.push(slotNum);
+      }
+      renderFavoritePicker();
+      if (state.selectedFavorites.length === 4) {
+        applyGridPattern("diagonal");
+      } else {
+        render4x4Board();
+      }
+    }
+
+    function applyGridPattern(pattern) {
+      if (state.selectedFavorites.length !== 4) return;
+      const f = state.selectedFavorites;
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+          let pick = f[0];
+          if (pattern === "diagonal") pick = f[(r + c) % 4];
+          if (pattern === "rows")     pick = f[r % 4];
+          if (pattern === "columns")  pick = f[c % 4];
+          state.gridCells[r * 4 + c] = pick;
+        }
+      }
+      render4x4Board();
+    }
+
+    function render4x4Board() {
+      const board = document.getElementById("warhol4x4Board");
+      board.innerHTML = "";
+
+      for (let i = 0; i < 16; i++) {
+        const cell = document.createElement("div");
+        cell.className = "warhol-cell";
+        cell.setAttribute("data-help", "Click this square to switch which of your 4 favorite pictures goes here!");
+
+        let slotNum = state.gridCells[i];
+        if (state.selectedFavorites.length > 0 && !state.selectedFavorites.includes(slotNum)) {
+          slotNum = state.selectedFavorites[i % state.selectedFavorites.length];
+          state.gridCells[i] = slotNum;
+        }
+
+        const url = slotNum ? localStorage.getItem(keyWarhol(slotNum)) : null;
+        if (url) {
+          cell.innerHTML = `<img src="${url}" alt="Tile ${i + 1}" />`;
+        }
+
+        cell.onclick = () => {
+          if (state.selectedFavorites.length === 0) return;
+          const curIdx = state.selectedFavorites.indexOf(state.gridCells[i]);
+          const nextIdx = (curIdx + 1) % state.selectedFavorites.length;
+          state.gridCells[i] = state.selectedFavorites[nextIdx];
+          render4x4Board();
+        };
+
+        board.appendChild(cell);
+      }
+    }
+
+    async function downloadFinal4x4Image() {
+      if (state.selectedFavorites.length !== 4) {
+        alert("Please pick 4 favorite Warhol pictures first!");
+        return;
+      }
+
+      const tileSize = 400; // 1600x1600 crisp final PNG
+      const finalCanvas = document.createElement("canvas");
+      finalCanvas.width = tileSize * 4;
+      finalCanvas.height = tileSize * 4;
+      const ctx = finalCanvas.getContext("2d");
+
+      const loadImg = src => new Promise(resolve => {
+        const im = new Image();
+        im.onload = () => resolve(im);
+        im.src = src;
+      });
+
+      for (let idx = 0; idx < 16; idx++) {
+        const slotNum = state.gridCells[idx];
+        const url = localStorage.getItem(keyWarhol(slotNum));
+        if (!url) continue;
+        const img = await loadImg(url);
+        const row = Math.floor(idx / 4);
+        const col = idx % 4;
+        ctx.drawImage(img, col * tileSize, row * tileSize, tileSize, tileSize);
+      }
+
+      const link = document.createElement("a");
+      link.download = keyFinal();
+      link.href = finalCanvas.toDataURL("image/png");
+      link.click();
+    }
+
+    /*****************************************************************
+     * 9. 5TH-GRADE HOVER & RIGHT-CLICK POPUP + TEXT-TO-SPEECH
+     *****************************************************************/
+    const helperPopup = document.getElementById("kidHelperPopup");
+    const helperTextEl = document.getElementById("kidHelperText");
+    let hoverTimer = null;
+    let currentHelpTarget = null;
+
+    function findHelpElement(el) {
+      while (el && el !== document.body) {
+        if (el.hasAttribute && el.hasAttribute("data-help")) return el;
+        el = el.parentElement;
+      }
+      return null;
+    }
+
+    function showKidHelper(targetEl, clientX, clientY) {
+      const text = targetEl.getAttribute("data-help");
+      if (!text) return;
+
+      currentHelpTarget = targetEl;
+      helperTextEl.textContent = text;
+      helperPopup.classList.add("visible");
+
+      // Keep popup inside viewport
+      const pad = 14;
+      const rect = helperPopup.getBoundingClientRect();
+      let left = clientX + 12;
+      let top = clientY + 12;
+      if (left + rect.width > window.innerWidth - pad) {
+        left = Math.max(pad, window.innerWidth - rect.width - pad);
+      }
+      if (top + rect.height > window.innerHeight - pad) {
+        top = Math.max(pad, clientY - rect.height - 12);
+      }
+      helperPopup.style.left = `${left}px`;
+      helperPopup.style.top = `${top}px`;
+    }
+
+    function hideKidHelper() {
+      helperPopup.classList.remove("visible");
+      currentHelpTarget = null;
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    // Right-click anywhere shows 5th-grade popup immediately
+    document.addEventListener("contextmenu", e => {
+      const helpEl = findHelpElement(e.target);
+      if (helpEl) {
+        e.preventDefault();
+        clearTimeout(hoverTimer);
+        showKidHelper(helpEl, e.clientX, e.clientY);
+      }
+    });
+
+    // Hovering over elements shows popup after a short pause (if Hover Help is ON)
+    document.addEventListener("mouseover", e => {
+      if (!state.hoverHelpEnabled) return;
+      if (helperPopup.contains(e.target)) return;
+
+      const helpEl = findHelpElement(e.target);
+      if (!helpEl || helpEl === currentHelpTarget) return;
+
+      clearTimeout(hoverTimer);
+      const x = e.clientX;
+      const y = e.clientY;
+      hoverTimer = setTimeout(() => {
+        showKidHelper(helpEl, x, y);
+      }, 650);
+    });
+
+    document.addEventListener("mouseout", e => {
+      const helpEl = findHelpElement(e.target);
+      if (helpEl) {
+        clearTimeout(hoverTimer);
+      }
+    });
+
+    document.getElementById("closeHelpBtn").onclick = hideKidHelper;
+
+    // Text-to-Speech Speaker Button
+    document.getElementById("speakHelpBtn").onclick = () => {
+      const msg = helperTextEl.textContent;
+      if (!msg) return;
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(msg);
+        utterance.rate = 0.95;
+        utterance.pitch = 1.05;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert("Sorry, your browser does not support read-aloud speech.");
+      }
+    };
+
+    /*****************************************************************
+     * 10. EVENT WIRING & INITIALIZATION
+     *****************************************************************/
+    document.getElementById("toggleHoverHelpBtn").onclick = function () {
+      state.hoverHelpEnabled = !state.hoverHelpEnabled;
+      this.textContent = `💬 Hover Help: ${state.hoverHelpEnabled ? "ON" : "OFF"}`;
+      if (!state.hoverHelpEnabled) hideKidHelper();
+    };
+
+    document.getElementById("switchUserBtn").onclick = () => {
+      localStorage.removeItem("warhol_student_identity");
+      state.identity = null;
+      updateHeaderIdentity();
+      showScreen("screenRoster");
+      if (state.rosterRows.length === 0) loadMasterList();
+      else renderTeacherButtons();
+    };
+
+    document.getElementById("backToTeachersBtn").onclick = renderTeacherButtons;
+    document.getElementById("retrySheetBtn").onclick = loadMasterList;
+
+    document.getElementById("choosePhotoBtn").onclick = () => {
+      document.getElementById("imageUploadInput").click();
+    };
+
+    document.getElementById("imageUploadInput").onchange = e => {
+      if (e.target.files && e.target.files[0]) {
+        openCropperWithFile(e.target.files[0]);
+        e.target.value = "";
+      }
+    };
+
+    document.getElementById("resumeStudioBtn").onclick = () => {
+      const rawName = document.getElementById("firstNameInput").value.trim();
+      if (rawName) {
+        state.studentName = sanitizeFileName(rawName);
+        localStorage.setItem("warhol_active_first_name", rawName);
+      }
+      openEditorWithOriginal();
+    };
+
+    // Cropper Drag & Zoom Events
+    const cropCanvas = document.getElementById("cropCanvas");
+    cropCanvas.addEventListener("pointerdown", e => {
+      isDraggingCrop = true;
+      dragStartX = e.clientX - cropOffsetX;
+      dragStartY = e.clientY - cropOffsetY;
+      cropCanvas.setPointerCapture(e.pointerId);
+    });
+    cropCanvas.addEventListener("pointermove", e => {
+      if (!isDraggingCrop) return;
+      cropOffsetX = e.clientX - dragStartX;
+      cropOffsetY = e.clientY - dragStartY;
+      drawCropCanvas();
+    });
+    cropCanvas.addEventListener("pointerup", () => { isDraggingCrop = false; });
+
+    document.getElementById("cropZoomSlider").oninput = function () {
+      cropZoom = Number(this.value);
+      drawCropCanvas();
+    };
+
+    document.getElementById("cancelCropBtn").onclick = () => showScreen("screenUpload");
+    document.getElementById("confirmCropBtn").onclick = saveCroppedOriginal;
+
+    // Editor Actions
+    document.getElementById("applyBtn").onclick = () => applyFiltersToCanvas(true);
+    document.getElementById("saveVariationBtn").onclick = openSaveComparisonModal;
+    document.getElementById("compareCancelBtn").onclick = () => {
+      document.getElementById("compareModal").classList.remove("open");
+    };
+    document.getElementById("reopenOriginalBtn").onclick = openEditorWithOriginal;
+    document.getElementById("changeBasePhotoBtn").onclick = enterNameAndUploadStep;
+    document.getElementById("unlockGridBtn").onclick = openGridBuilder;
+
+    // 4x4 Grid Actions
+    document.getElementById("backToEditorBtn").onclick = openEditorWithOriginal;
+    document.querySelectorAll(".pattern-btn").forEach(btn => {
+      btn.onclick = () => applyGridPattern(btn.getAttribute("data-pattern"));
+    });
+    document.getElementById("downloadFinalBtn").onclick = downloadFinal4x4Image;
+
+    // Boot App
+    buildSlidersUI();
+    const savedIdentityRaw = localStorage.getItem("warhol_student_identity");
+    if (savedIdentityRaw) {
+      try {
+        state.identity = JSON.parse(savedIdentityRaw);
+        enterNameAndUploadStep();
+      } catch (e) {
+        showScreen("screenRoster");
+        loadMasterList();
+      }
+    } else {
+      showScreen("screenRoster");
+      loadMasterList();
+    }
+  </script>
+</body>
+</html>
