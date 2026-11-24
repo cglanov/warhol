@@ -63,14 +63,11 @@
       </div>
     </section>
 
-    <!-- SCREEN 2: ENTER FIRST NAME & UPLOAD IMAGE -->
+    <!-- SCREEN 2: UPLOAD IMAGE -->
     <section id="screenUpload" class="screen">
       <div class="card center-card">
-        <h1 data-help="First check your first name, then choose a picture from your computer or tablet.">Name &amp; Source Photo</h1>
-        <p class="subtitle" data-help="Your first name is used to name all of your saved art files automatically.">Confirm your first name for automatic file naming:</p>
-        <div class="input-row">
-          <input type="text" id="firstNameInput" placeholder="First name" data-help="Type your first name here. Every picture you save will start with this name!" />
-        </div>
+        <h1 data-help="Choose a picture from your computer or tablet to start your Pop Art project.">Source Photo</h1>
+        <p class="subtitle">Upload a portrait photo to crop and edit.</p>
 
         <div class="upload-box" data-help="Click the button inside this box to pick any photo from your device.">
           <p>Select a portrait image to begin</p>
@@ -86,7 +83,7 @@
         </div>
 
         <div id="resumeExistingWrap" style="display:none; margin-top:22px; padding-top:18px; border-top:1px solid var(--border);">
-          <p class="subtitle" style="margin-bottom:10px; font-size:0.85rem;">An existing original photo was found for this name.</p>
+          <p class="subtitle" style="margin-bottom:10px; font-size:0.85rem;">An existing original photo was found for your session.</p>
           <button id="resumeStudioBtn" class="btn-success" data-help="Jump right back into the Pop Art editor with the photo you already uploaded.">Resume Studio Session</button>
         </div>
       </div>
@@ -116,14 +113,14 @@
     <!-- SCREEN 4: MAIN WARHOL PHOTO EDITOR -->
     <section id="screenStudio" class="screen">
       <div class="studio-layout">
-        <!-- LEFT SIDEBAR: 9 ADJUSTMENT SLIDERS + APPLY + SAVE -->
+        <!-- LEFT SIDEBAR: 8 ADJUSTMENT SLIDERS + APPLY + SAVE -->
         <aside class="tools-panel" data-help="These are your Pop Art color sliders! Move them to change how your photo looks.">
-          <h3 data-help="Move any slider below to change colors, brightness, or cartoon poster effects.">Adjustments</h3>
+          <h3 data-help="Move any slider below to change colors, brightness, or contrast.">Adjustments</h3>
           <div id="slidersContainer"></div>
 
           <div class="tools-actions">
-            <button id="applyBtn" class="btn-secondary" data-help="Click Apply to lock in your current slider changes as the new starting point, so you can keep adjusting the sliders even more!">Apply</button>
-            <button id="saveVariationBtn" class="btn-success" data-help="Click Save when your picture looks awesome and different! It will check your art and save it to your Warhol collection.">Save</button>
+            <button id="applyBtn" class="btn-secondary" data-help="Click Apply to lock in your current slider changes as the new baseline, so you can keep adjusting the sliders from this version!">Apply</button>
+            <button id="saveVariationBtn" class="btn-success" data-help="Click Save when your picture looks bold and different! It will check your art and save it to your Warhol collection.">Save</button>
           </div>
         </aside>
 
@@ -141,19 +138,23 @@
                 </button>
                 <button id="changeBasePhotoBtn" class="btn-neutral" data-help="Upload and crop a brand-new starting photo.">New Photo</button>
               </div>
-              <button id="unlockGridBtn" class="btn-primary" disabled data-help="Save 6 different Warhol versions first! Once you have 6, this button unlocks so you can build your 4 by 4 final poster.">Create 4×4 Grid (0/6)</button>
+              <button id="unlockGridBtn" class="btn-primary" disabled data-help="Save at least 4 different Warhol versions first! Once you have 4, this button unlocks so you can build your 2 by 2 final print.">Create 2×2 Grid (0/4)</button>
             </div>
 
             <div class="canvas-stage">
               <canvas id="editorCanvas" width="500" height="500" data-help="This is your art canvas! Watch your picture change live as you move the sliders on the left."></canvas>
             </div>
-            <p id="fileNamingHint" class="file-meta" data-help="Shows the file name your original picture is saved under."></p>
+
+            <div class="canvas-footer-meta">
+              <span id="fileNamingHint" class="file-meta" data-help="Shows the file name your original picture is saved under."></span>
+              <span id="diffPercentBadge" class="diff-badge" data-help="Shows how much your current image has changed compared to your original photo.">Difference from original: 0%</span>
+            </div>
           </div>
 
-          <div class="gallery-card" data-help="Here are your saved pictures! You need 6 Warhol versions to unlock the 4 by 4 poster maker.">
+          <div class="gallery-card" data-help="Here are your saved pictures! Save at least 4 Warhol versions to unlock the 2 by 2 print maker.">
             <div class="gallery-header">
               <h3>Collection (<span id="savedCountLabel">0</span>/6 Saved)</h3>
-              <span style="font-size:0.8rem; color:var(--muted);">Create 6 distinct color variations to unlock the grid layout</span>
+              <span style="font-size:0.8rem; color:var(--muted);">Create at least 4 distinct color variations to unlock the 2×2 layout</span>
             </div>
             <div id="gallerySlots" class="slots-row"></div>
           </div>
@@ -161,42 +162,42 @@
       </div>
     </section>
 
-    <!-- SCREEN 5: 4x4 WARHOL GRID BUILDER -->
+    <!-- SCREEN 5: 2x2 WARHOL GRID BUILDER -->
     <section id="screenGrid" class="screen">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding-bottom:16px; border-bottom:1px solid var(--border);">
           <div>
-            <h1 style="margin:0;" data-help="Pick your 4 favorite Warhol pictures and arrange them in the 4 by 4 grid to make your final masterpiece!">4×4 Print Layout</h1>
-            <p style="margin:4px 0 0; font-size:0.875rem; color:var(--ink-secondary);">Select 4 variations and arrange them into a 16-tile print.</p>
+            <h1 style="margin:0;" data-help="Pick your 4 favorite Warhol pictures and arrange them in the 2 by 2 grid to make your final print!">2×2 Print Layout</h1>
+            <p style="margin:4px 0 0; font-size:0.875rem; color:var(--ink-secondary);">Select 4 variations and arrange them into a 4-tile print.</p>
           </div>
           <button id="backToEditorBtn" class="btn-neutral" data-help="Go back to the color sliders if you want to edit your pictures more.">Back to Editor</button>
         </div>
 
         <div class="grid-builder-wrap">
           <div>
-            <h3 data-help="Click 4 of your 6 saved pictures below to pick your 4 favorites.">1. Select 4 Variations (<span id="favCountLabel">0</span>/4)</h3>
+            <h3 data-help="Click 4 of your saved pictures below to pick your 4 favorites.">1. Select 4 Variations (<span id="favCountLabel">0</span>/4)</h3>
             <div id="favPickerGrid" class="fav-pick-grid"></div>
 
-            <h3 style="margin-top:16px;" data-help="Use these buttons to automatically arrange your 4 favorites in cool patterns, or click any square on the right to change it yourself!">2. Preset Patterns</h3>
+            <h3 style="margin-top:16px;" data-help="Use these buttons to arrange your 4 favorites in different orders, or click any square on the right to change it yourself!">2. Preset Arrangements</h3>
             <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
-              <button class="btn-neutral pattern-btn" style="padding:6px 10px; font-size:0.8rem;" data-pattern="diagonal" data-help="Arranges your 4 favorites in a diagonal rainbow pattern.">Diagonal</button>
-              <button class="btn-neutral pattern-btn" style="padding:6px 10px; font-size:0.8rem;" data-pattern="rows" data-help="Puts one favorite on each row of the 4 by 4 grid.">Rows</button>
-              <button class="btn-neutral pattern-btn" style="padding:6px 10px; font-size:0.8rem;" data-pattern="columns" data-help="Puts one favorite in each column of the 4 by 4 grid.">Columns</button>
+              <button class="btn-neutral pattern-btn" style="padding:6px 10px; font-size:0.8rem;" data-pattern="standard" data-help="Places your 4 selected variations in order from top-left to bottom-right.">Standard</button>
+              <button class="btn-neutral pattern-btn" style="padding:6px 10px; font-size:0.8rem;" data-pattern="rotate" data-help="Rotates your 4 variations clockwise around the 2 by 2 grid.">Rotate</button>
+              <button class="btn-neutral pattern-btn" style="padding:6px 10px; font-size:0.8rem;" data-pattern="swap" data-help="Swaps the diagonal corners of your 2 by 2 grid.">Swap Diagonals</button>
             </div>
             <p style="font-size:0.8rem; color:var(--muted); margin:0 0 18px; line-height:1.4;">Click any individual tile on the preview board to cycle through your 4 selected variations.</p>
 
-            <button id="downloadFinalBtn" class="btn-success" style="width:100%;" disabled data-help="Click here to download your finished 4 by 4 Warhol poster as one big picture file!">
+            <button id="downloadFinalBtn" class="btn-success" style="width:100%;" disabled data-help="Click here to download your finished 2 by 2 Warhol print as one combined image file!">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
-              Download 4×4 PNG
+              Download 2×2 PNG
             </button>
           </div>
 
           <div class="board-stage">
-            <div id="warhol4x4Board" class="warhol-4x4" data-help="This is your 4 by 4 Pop Art poster! Click any square to switch which of your 4 favorites is in that spot."></div>
+            <div id="warhol2x2Board" class="warhol-2x2" data-help="This is your 2 by 2 Pop Art print! Click any square to switch which of your 4 favorite pictures goes here."></div>
           </div>
         </div>
       </div>
@@ -207,7 +208,8 @@
   <div id="compareModal" class="modal-backdrop">
     <div class="modal-box">
       <h2 id="compareModalTitle">Verify Variation</h2>
-      <p id="compareModalQuestion" class="subtitle" style="margin-bottom:14px;"></p>
+      <p id="compareModalQuestion" class="subtitle" style="margin-bottom:6px;"></p>
+      <p id="compareModalMetrics" class="diff-summary-text"></p>
       <div id="compareThumbnails" class="compare-grid"></div>
       <div style="display:flex; justify-content:center; gap:10px; margin-top:18px; flex-wrap:wrap;">
         <button id="compareCancelBtn" class="btn-neutral" data-help="Go back to the sliders so you can change the colors more.">Keep Adjusting</button>
