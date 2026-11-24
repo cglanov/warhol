@@ -6,25 +6,25 @@ const SHEET_TAB = "masterList";
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_TAB)}`;
 
 const SLIDER_SPECS = [
-  { key: "saturation",  label: "Saturation",  min: -100, max: 100, def: 0, help: "Makes colors super bright and bold like neon paint, or turns them gray like a black-and-white photo." },
+  { key: "saturation",  label: "Saturation",  min: -100, max: 100, def: 0, help: "Makes colors richer and more vivid on the right, or turns them gray like a black-and-white photo on the left." },
   { key: "hue",         label: "Hue",         min: -180, max: 180, def: 0, help: "Spins the color wheel! It can turn blue hair into bright pink, green, or yellow." },
   { key: "brightness",  label: "Brightness",  min: -100, max: 100, def: 0, help: "Makes your whole picture lighter like turning on a lamp, or darker like turning down the lights." },
-  { key: "contrast",    label: "Contrast",    min: -100, max: 100, def: 0, help: "Makes dark shadows darker and bright spots brighter so your face pops out like a comic book." },
+  { key: "contrast",    label: "Contrast",    min: -100, max: 100, def: 0, help: "Makes dark shadows darker and bright spots brighter so your face pops out." },
   { key: "shadow",      label: "Shadow",      min: -100, max: 100, def: 0, help: "Changes only the darkest parts of your picture, like hair and dark outlines." },
   { key: "highlight",   label: "Highlight",   min: -100, max: 100, def: 0, help: "Changes only the brightest shiny spots on your face and background." },
   { key: "tint",        label: "Tint",        min: -100, max: 100, def: 0, help: "Shifts colors toward cool green on the left or bright magenta pink on the right." },
-  { key: "temperature", label: "Temperature", min: -100, max: 100, def: 0, help: "Makes your photo feel chilly and blue on the left, or warm and sunny orange on the right." },
-  { key: "posterize",   label: "Posterize",   min: 0,    max: 100, def: 0, help: "Turns smooth photo shading into bold flat paint blocks, just like Andy Warhol's silkscreen prints!" }
+  { key: "temperature", label: "Temperature", min: -100, max: 100, def: 0, help: "Makes your photo feel chilly and blue on the left, or warm and sunny orange on the right." }
 ];
 
 const state = {
   rosterRows: [],
-  identity: null,        // { teacher, colA, colB, label }
-  studentName: "",       // sanitized first name for file keys
+  identity: null,          // { teacher, colA, colB, label }
+  studentName: "",         // sanitized first name for file keys
   sliderValues: {},
-  baseImageData: null,   // ImageData at 500x500
-  selectedFavorites: [], // indices 1..6 (up to 4)
-  gridCells: new Array(16).fill(null) // stores variation index 1..6 for each of 16 cells
+  originalImageData: null, // Unmodified ImageData from original.png (500x500)
+  baseImageData: null,     // Current baseline ImageData updated on each Apply (500x500)
+  selectedFavorites: [],   // indices 1..6 (up to 4)
+  gridCells: new Array(4).fill(null) // stores variation index 1..6 for each of the 4 cells in the 2x2 grid
 };
 
 /*****************************************************************
@@ -33,6 +33,15 @@ const state = {
 function sanitizeFileName(raw) {
   const cleaned = String(raw || "").trim().replace(/[^a-zA-Z0-9_-]/g, "_");
   return cleaned || "student";
+}
+
+function resolveStudentFilePrefix() {
+  const rawName =
+    (state.identity && state.identity.colA) ||
+    localStorage.getItem("warhol_active_first_name") ||
+    "student";
+  state.studentName = sanitizeFileName(rawName);
+  localStorage.setItem("warhol_active_first_name", rawName);
 }
 
 function keyOriginal() { return `${state.studentName}_original.png`; }
@@ -172,7 +181,7 @@ function selectTeacher(teacher) {
 function selectStudentIdentity(stu) {
   state.identity = stu;
   localStorage.setItem("warhol_student_identity", JSON.stringify(stu));
-  enterNameAndUploadStep();
+  enterUploadStep();
 }
 
 function updateHeaderIdentity() {
@@ -189,14 +198,11 @@ function updateHeaderIdentity() {
 }
 
 /*****************************************************************
- * 5. NAME ENTRY, PHOTO UPLOAD & SQUARE CROPPER
+ * 5. PHOTO UPLOAD & SQUARE CROPPER
  *****************************************************************/
-function enterNameAndUploadStep() {
+function enterUploadStep() {
   updateHeaderIdentity();
-  const savedName = localStorage.getItem("warhol_active_first_name");
-  const defaultName = savedName || (state.identity ? state.identity.colA : "");
-  document.getElementById("firstNameInput").value = defaultName;
-  state.studentName = sanitizeFileName(defaultName);
+  resolveStudentFilePrefix();
 
   const existingOrig = localStorage.getItem(keyOriginal());
   document.getElementById("resumeExistingWrap").style.display = existingOrig ? "block" : "none";
@@ -213,14 +219,7 @@ let dragStartX = 0;
 let dragStartY = 0;
 
 function openCropperWithFile(file) {
-  const rawName = document.getElementById("firstNameInput").value.trim();
-  if (!rawName) {
-    alert("Please enter your first name before uploading a photo.");
-    document.getElementById("firstNameInput").focus();
-    return;
-  }
-  state.studentName = sanitizeFileName(rawName);
-  localStorage.setItem("warhol_active_first_name", rawName);
+  resolveStudentFilePrefix();
 
   const reader = new FileReader();
   reader.onload = ev => {
@@ -288,7 +287,7 @@ function saveCroppedOriginal() {
 }
 
 /*****************************************************************
- * 6. WARHOL PHOTO EDITOR & PIXEL FILTERS
+ * 6. WARHOL PHOTO EDITOR, PIXEL FILTERS & DIFFERENCE METRIC
  *****************************************************************/
 function buildSlidersUI() {
   const container = document.getElementById("slidersContainer");
@@ -325,10 +324,46 @@ function resetSlidersToDefault() {
   });
 }
 
+function cloneImageData(imgData) {
+  return new ImageData(new Uint8ClampedArray(imgData.data), imgData.width, imgData.height);
+}
+
+function computeImageDifferencePercent(imgDataA, imgDataB) {
+  if (!imgDataA || !imgDataB) return 0;
+  const a = imgDataA.data;
+  const b = imgDataB.data;
+  const len = Math.min(a.length, b.length);
+  let totalDiff = 0;
+  let samples = 0;
+
+  // Sample every 2nd pixel (8-byte stride) for fast, consistent perceptual measurement
+  for (let i = 0; i < len; i += 8) {
+    const dr = Math.abs(a[i] - b[i]);
+    const dg = Math.abs(a[i + 1] - b[i + 1]);
+    const db = Math.abs(a[i + 2] - b[i + 2]);
+    totalDiff += (dr + dg + db) / 765;
+    samples++;
+  }
+
+  if (samples === 0) return 0;
+  const meanNormalizedDiff = totalDiff / samples;
+  return Math.min(100, Math.round(meanNormalizedDiff * 175));
+}
+
+function updateDifferenceDisplay(currentImageData) {
+  const pct = computeImageDifferencePercent(state.originalImageData, currentImageData);
+  const badge = document.getElementById("diffPercentBadge");
+  if (badge) {
+    badge.textContent = `Difference from original: ${pct}%`;
+  }
+  return pct;
+}
+
 function openEditorWithOriginal() {
+  resolveStudentFilePrefix();
   const origUrl = localStorage.getItem(keyOriginal());
   if (!origUrl) {
-    enterNameAndUploadStep();
+    enterUploadStep();
     return;
   }
 
@@ -343,8 +378,11 @@ function openEditorWithOriginal() {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    state.baseImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const initialData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    state.originalImageData = cloneImageData(initialData);
+    state.baseImageData = cloneImageData(initialData);
     resetSlidersToDefault();
+    updateDifferenceDisplay(initialData);
     renderGallerySlots();
     showScreen("screenStudio");
   };
@@ -416,15 +454,12 @@ function applyFiltersToCanvas(commitAsNewBase) {
 
   const {
     saturation, hue, brightness, contrast,
-    shadow, highlight, tint, temperature, posterize
+    shadow, highlight, tint, temperature
   } = state.sliderValues;
 
   const cVal = contrast * 2.55;
   const contrastFactor = (259 * (cVal + 255)) / (255 * (259 - cVal));
-  const satMult = 1 + saturation / 100;
   const hueShift = hue / 360;
-  const levels = posterize > 0 ? Math.max(2, Math.round(16 - (posterize / 100) * 14)) : 0;
-  const step = levels > 1 ? 255 / (levels - 1) : 1;
 
   for (let i = 0; i < src.length; i += 4) {
     let r = src[i];
@@ -459,19 +494,17 @@ function applyFiltersToCanvas(commitAsNewBase) {
     g = clamp255(g);
     b = clamp255(b);
 
-    // 5. Hue & Saturation
+    // 5. Hue & Iterative Saturation
     if (hue !== 0 || saturation !== 0) {
       let [h, s, l] = rgbToHsl(r, g, b);
       h = (h + hueShift + 1) % 1;
-      s = Math.max(0, Math.min(1, s * satMult));
+      if (saturation < 0) {
+        s = Math.max(0, s * (1 + saturation / 100));
+      } else if (saturation > 0 && s > 0.004) {
+        const t = saturation / 100;
+        s = Math.min(1, Math.pow(s, 1 - 0.72 * t));
+      }
       [r, g, b] = hslToRgb(h, s, l);
-    }
-
-    // 6. Posterize
-    if (levels > 0) {
-      r = Math.round(Math.round((r / 255) * (levels - 1)) * step);
-      g = Math.round(Math.round((g / 255) * (levels - 1)) * step);
-      b = Math.round(Math.round((b / 255) * (levels - 1)) * step);
     }
 
     dst[i]     = clamp255(r);
@@ -481,9 +514,10 @@ function applyFiltersToCanvas(commitAsNewBase) {
   }
 
   ctx.putImageData(out, 0, 0);
+  updateDifferenceDisplay(out);
 
   if (commitAsNewBase) {
-    state.baseImageData = out;
+    state.baseImageData = cloneImageData(out);
     resetSlidersToDefault();
   }
 }
@@ -493,6 +527,10 @@ function applyFiltersToCanvas(commitAsNewBase) {
  *****************************************************************/
 function openSaveComparisonModal() {
   const canvas = document.getElementById("editorCanvas");
+  const ctx = canvas.getContext("2d");
+  const currentImgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const diffFromOriginal = computeImageDifferencePercent(state.originalImageData, currentImgData);
+
   const currentDataUrl = canvas.toDataURL("image/png");
   const origDataUrl = localStorage.getItem(keyOriginal());
   const nextSlot = getNextWarholSlot();
@@ -505,8 +543,11 @@ function openSaveComparisonModal() {
 
   const titleEl = document.getElementById("compareModalTitle");
   const questionEl = document.getElementById("compareModalQuestion");
+  const metricsEl = document.getElementById("compareModalMetrics");
   const thumbsEl = document.getElementById("compareThumbnails");
   thumbsEl.innerHTML = "";
+
+  metricsEl.textContent = `Modified image is ${diffFromOriginal}% different from the original.`;
 
   if (nextSlot === 1) {
     titleEl.textContent = `Compare Before Saving (${keyWarhol(1)})`;
@@ -530,11 +571,14 @@ function openSaveComparisonModal() {
       renderGallerySlots();
 
       const totalSaved = getSavedWarholCount();
-      if (totalSaved < 6) {
-        alert(`Saved as ${keyWarhol(nextSlot)}.\n\nReopening your original photo to create variation #${totalSaved + 1}.`);
+      if (totalSaved < 4) {
+        alert(`Saved as ${keyWarhol(nextSlot)} (${diffFromOriginal}% different from original).\n\nReopening your original photo to create variation #${totalSaved + 1}.`);
+        openEditorWithOriginal();
+      } else if (totalSaved === 4) {
+        alert(`Saved as ${keyWarhol(nextSlot)} (${diffFromOriginal}% different from original).\n\nYou now have 4 variations—the "Create 2×2 Grid" layout builder is unlocked! You can build your grid now or create up to 2 more variations.`);
         openEditorWithOriginal();
       } else {
-        alert(`All 6 variations have been saved.\n\nThe "Create 4×4 Grid" layout builder is now unlocked.`);
+        alert(`Saved as ${keyWarhol(nextSlot)} (${diffFromOriginal}% different from original).`);
         openEditorWithOriginal();
       }
     }
@@ -582,22 +626,26 @@ function renderGallerySlots() {
 
   document.getElementById("savedCountLabel").textContent = count;
   const unlockBtn = document.getElementById("unlockGridBtn");
-  if (count >= 6) {
+  if (count >= 4) {
     unlockBtn.disabled = false;
-    unlockBtn.textContent = "Create 4×4 Grid";
+    unlockBtn.textContent = "Create 2×2 Grid";
   } else {
     unlockBtn.disabled = true;
-    unlockBtn.textContent = `Create 4×4 Grid (${count}/6)`;
+    unlockBtn.textContent = `Create 2×2 Grid (${count}/4)`;
   }
 }
 
 /*****************************************************************
- * 8. 4x4 WARHOL ARRAY BUILDER & FINAL DOWNLOAD
+ * 8. 2x2 WARHOL ARRAY BUILDER & FINAL DOWNLOAD
  *****************************************************************/
 function openGridBuilder() {
-  state.selectedFavorites = [1, 2, 3, 4];
+  const availableSlots = [];
+  for (let i = 1; i <= 6; i++) {
+    if (localStorage.getItem(keyWarhol(i))) availableSlots.push(i);
+  }
+  state.selectedFavorites = availableSlots.slice(0, 4);
   renderFavoritePicker();
-  applyGridPattern("diagonal");
+  applyGridPattern("standard");
   showScreen("screenGrid");
 }
 
@@ -639,32 +687,34 @@ function toggleFavorite(slotNum) {
   }
   renderFavoritePicker();
   if (state.selectedFavorites.length === 4) {
-    applyGridPattern("diagonal");
+    applyGridPattern("standard");
   } else {
-    render4x4Board();
+    render2x2Board();
   }
 }
 
 function applyGridPattern(pattern) {
   if (state.selectedFavorites.length !== 4) return;
   const f = state.selectedFavorites;
-  for (let r = 0; r < 4; r++) {
-    for (let c = 0; c < 4; c++) {
-      let pick = f[0];
-      if (pattern === "diagonal") pick = f[(r + c) % 4];
-      if (pattern === "rows")     pick = f[r % 4];
-      if (pattern === "columns")  pick = f[c % 4];
-      state.gridCells[r * 4 + c] = pick;
-    }
+  if (pattern === "standard") {
+    state.gridCells = [f[0], f[1], f[2], f[3]];
+  } else if (pattern === "rotate") {
+    const cur = state.gridCells.length === 4 && state.gridCells.every(Boolean)
+      ? state.gridCells
+      : [f[0], f[1], f[2], f[3]];
+    // Rotate clockwise around 2x2: [TL, TR, BL, BR] -> [BL, TL, BR, TR]
+    state.gridCells = [cur[2], cur[0], cur[3], cur[1]];
+  } else if (pattern === "swap") {
+    state.gridCells = [f[3], f[2], f[1], f[0]];
   }
-  render4x4Board();
+  render2x2Board();
 }
 
-function render4x4Board() {
-  const board = document.getElementById("warhol4x4Board");
+function render2x2Board() {
+  const board = document.getElementById("warhol2x2Board");
   board.innerHTML = "";
 
-  for (let i = 0; i < 16; i++) {
+  for (let i = 0; i < 4; i++) {
     const cell = document.createElement("div");
     cell.className = "warhol-cell";
     cell.setAttribute("data-help", "Click this square to switch which of your 4 favorite pictures goes here!");
@@ -685,23 +735,23 @@ function render4x4Board() {
       const curIdx = state.selectedFavorites.indexOf(state.gridCells[i]);
       const nextIdx = (curIdx + 1) % state.selectedFavorites.length;
       state.gridCells[i] = state.selectedFavorites[nextIdx];
-      render4x4Board();
+      render2x2Board();
     };
 
     board.appendChild(cell);
   }
 }
 
-async function downloadFinal4x4Image() {
+async function downloadFinal2x2Image() {
   if (state.selectedFavorites.length !== 4) {
     alert("Please select 4 variations first.");
     return;
   }
 
-  const tileSize = 400; // 1600x1600 crisp final PNG
+  const tileSize = 500; // 1000x1000 crisp final PNG
   const finalCanvas = document.createElement("canvas");
-  finalCanvas.width = tileSize * 4;
-  finalCanvas.height = tileSize * 4;
+  finalCanvas.width = tileSize * 2;
+  finalCanvas.height = tileSize * 2;
   const ctx = finalCanvas.getContext("2d");
 
   const loadImg = src => new Promise(resolve => {
@@ -710,13 +760,13 @@ async function downloadFinal4x4Image() {
     im.src = src;
   });
 
-  for (let idx = 0; idx < 16; idx++) {
+  for (let idx = 0; idx < 4; idx++) {
     const slotNum = state.gridCells[idx];
     const url = localStorage.getItem(keyWarhol(slotNum));
     if (!url) continue;
     const img = await loadImg(url);
-    const row = Math.floor(idx / 4);
-    const col = idx % 4;
+    const row = Math.floor(idx / 2);
+    const col = idx % 2;
     ctx.drawImage(img, col * tileSize, row * tileSize, tileSize, tileSize);
   }
 
@@ -827,11 +877,7 @@ document.getElementById("imageUploadInput").onchange = e => {
 };
 
 document.getElementById("resumeStudioBtn").onclick = () => {
-  const rawName = document.getElementById("firstNameInput").value.trim();
-  if (rawName) {
-    state.studentName = sanitizeFileName(rawName);
-    localStorage.setItem("warhol_active_first_name", rawName);
-  }
+  resolveStudentFilePrefix();
   openEditorWithOriginal();
 };
 
@@ -866,15 +912,15 @@ document.getElementById("compareCancelBtn").onclick = () => {
   document.getElementById("compareModal").classList.remove("open");
 };
 document.getElementById("reopenOriginalBtn").onclick = openEditorWithOriginal;
-document.getElementById("changeBasePhotoBtn").onclick = enterNameAndUploadStep;
+document.getElementById("changeBasePhotoBtn").onclick = enterUploadStep;
 document.getElementById("unlockGridBtn").onclick = openGridBuilder;
 
-// 4x4 Grid Actions
+// 2x2 Grid Actions
 document.getElementById("backToEditorBtn").onclick = openEditorWithOriginal;
 document.querySelectorAll(".pattern-btn").forEach(btn => {
   btn.onclick = () => applyGridPattern(btn.getAttribute("data-pattern"));
 });
-document.getElementById("downloadFinalBtn").onclick = downloadFinal4x4Image;
+document.getElementById("downloadFinalBtn").onclick = downloadFinal2x2Image;
 
 // Boot App
 buildSlidersUI();
@@ -882,7 +928,7 @@ const savedIdentityRaw = localStorage.getItem("warhol_student_identity");
 if (savedIdentityRaw) {
   try {
     state.identity = JSON.parse(savedIdentityRaw);
-    enterNameAndUploadStep();
+    enterUploadStep();
   } catch (e) {
     showScreen("screenRoster");
     loadMasterList();
