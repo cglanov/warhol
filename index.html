@@ -3,146 +3,186 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pop Art Studio — Warhol Marilyn Print Maker</title>
+  <title>Pop Art Studio — Warhol Print Maker</title>
   <style>
     :root {
-      --bg: #f6f7fb;
-      --card: #ffffff;
-      --ink: #1e2235;
-      --muted: #5c627a;
-      --pink: #ff2e93;
-      --cyan: #00b8d9;
-      --yellow: #ffd600;
-      --purple: #7c4dff;
-      --green: #00c853;
-      --border: #dfe3f0;
-      --shadow: 0 8px 24px rgba(30, 34, 53, 0.08);
-      --radius: 16px;
+      --bg: #f4f3ef;
+      --surface: #ffffff;
+      --surface-subtle: #f9f8f6;
+      --surface-hover: #efede8;
+      --mat: #eceae4;
+      --ink: #1c1c1a;
+      --ink-secondary: #575651;
+      --muted: #85837c;
+      --accent: #2c3539;
+      --accent-hover: #1d2326;
+      --sage: #46564f;
+      --sage-hover: #37443e;
+      --border: #e2e0d8;
+      --border-strong: #c8c5bb;
+      --danger-bg: #faf5f5;
+      --danger-border: #dfc7c7;
+      --danger-ink: #7d3838;
+      --shadow-sm: 0 1px 2px rgba(28, 28, 26, 0.04);
+      --shadow-md: 0 8px 24px rgba(28, 28, 26, 0.08);
+      --radius: 8px;
+      --radius-sm: 6px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-family: var(--font-sans);
       background: var(--bg);
       color: var(--ink);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* Top Header */
     header {
-      background: linear-gradient(90deg, #ff2e93, #7c4dff, #00b8d9);
-      color: #fff;
-      padding: 12px 20px;
+      background: var(--surface);
+      color: var(--ink);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 10px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+      gap: 12px;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 1.3rem;
-      font-weight: 800;
-      letter-spacing: 0.3px;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-icon {
+      color: var(--ink-secondary);
+      display: flex;
+      align-items: center;
     }
 
     .brand-badge {
-      background: var(--yellow);
-      color: var(--ink);
-      padding: 3px 9px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 900;
-      text-transform: uppercase;
+      background: var(--surface-subtle);
+      color: var(--ink-secondary);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
     }
 
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .pill-info {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface-subtle);
+      color: var(--ink-secondary);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 500;
     }
 
     button {
       font-family: inherit;
       cursor: pointer;
-      border: none;
-      border-radius: 12px;
-      font-weight: 700;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
-    }
-
-    button:hover:not(:disabled) {
-      transform: translateY(-1px);
-    }
-
-    button:active:not(:disabled) {
-      transform: translateY(0);
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      font-size: 0.875rem;
+      line-height: 1.2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     }
 
     button:disabled {
-      opacity: 0.45;
+      opacity: 0.42;
       cursor: not-allowed;
     }
 
     .btn-header {
-      background: rgba(255, 255, 255, 0.92);
+      background: var(--surface);
       color: var(--ink);
-      padding: 7px 12px;
-      font-size: 0.85rem;
+      border-color: var(--border-strong);
+      padding: 5px 10px;
+      font-size: 0.8rem;
+    }
+
+    .btn-header:hover:not(:disabled) {
+      background: var(--surface-hover);
     }
 
     .btn-primary {
-      background: var(--pink);
-      color: #fff;
-      padding: 11px 18px;
-      font-size: 1rem;
-      box-shadow: 0 4px 12px rgba(255, 46, 147, 0.3);
+      background: var(--accent);
+      color: #ffffff;
+      padding: 9px 16px;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
     }
 
     .btn-secondary {
-      background: var(--cyan);
-      color: #fff;
-      padding: 10px 16px;
-      font-size: 0.95rem;
+      background: var(--surface);
+      color: var(--ink);
+      border-color: var(--border-strong);
+      padding: 8px 14px;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--surface-hover);
     }
 
     .btn-success {
-      background: var(--green);
-      color: #fff;
-      padding: 11px 18px;
-      font-size: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+      background: var(--sage);
+      color: #ffffff;
+      padding: 9px 16px;
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: var(--sage-hover);
     }
 
     .btn-neutral {
-      background: #e9ecf6;
+      background: var(--surface-subtle);
       color: var(--ink);
-      padding: 10px 16px;
-      font-size: 0.95rem;
+      border-color: var(--border);
+      padding: 8px 14px;
     }
 
-    /* Screens */
+    .btn-neutral:hover:not(:disabled) {
+      background: var(--surface-hover);
+      border-color: var(--border-strong);
+    }
+
+    /* Main Layout & Screens */
     main {
       flex: 1;
-      padding: 20px;
-      max-width: 1320px;
+      padding: 24px;
+      max-width: 1280px;
       width: 100%;
       margin: 0 auto;
     }
@@ -156,43 +196,72 @@
     }
 
     .card {
-      background: var(--card);
+      background: var(--surface);
       border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      border: 2px solid var(--border);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
     }
 
     .center-card {
-      max-width: 720px;
-      margin: 24px auto;
+      max-width: 640px;
+      margin: 28px auto;
       text-align: center;
     }
 
-    h1, h2, h3 {
-      margin-top: 0;
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      margin: 0 0 8px;
+      color: var(--ink);
+    }
+
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 0 0 12px;
+      color: var(--ink);
+    }
+
+    h3 {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-secondary);
+      margin: 0 0 12px;
+    }
+
+    .subtitle {
+      color: var(--ink-secondary);
+      font-size: 0.925rem;
+      margin: 0 0 20px;
+      line-height: 1.5;
     }
 
     /* Roster Selection Buttons */
     .button-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 12px;
-      margin-top: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
     }
 
     .roster-btn {
-      background: #f0f4ff;
-      border: 2px solid #cbd5f5;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
       color: var(--ink);
-      padding: 14px 12px;
-      font-size: 1.05rem;
-      border-radius: 14px;
+      padding: 12px;
+      font-size: 0.925rem;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
     }
 
     .roster-btn:hover {
-      background: var(--yellow);
-      border-color: var(--ink);
+      background: var(--surface-hover);
+      border-color: var(--border-strong);
     }
 
     /* Name & Upload Screen */
@@ -200,27 +269,41 @@
       display: flex;
       justify-content: center;
       gap: 10px;
-      margin: 14px 0 22px;
+      margin: 12px 0 22px;
       flex-wrap: wrap;
     }
 
     input[type="text"] {
       font-family: inherit;
-      font-size: 1.1rem;
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 2px solid var(--border);
+      font-size: 0.95rem;
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--ink);
       width: 260px;
       text-align: center;
-      font-weight: 700;
+      font-weight: 500;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(44, 53, 57, 0.12);
     }
 
     .upload-box {
-      border: 3px dashed var(--cyan);
-      background: #f2fcff;
-      border-radius: 16px;
-      padding: 28px;
-      margin-top: 14px;
+      border: 1px dashed var(--border-strong);
+      background: var(--surface-subtle);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      margin-top: 12px;
+    }
+
+    .upload-box p {
+      font-size: 0.925rem;
+      color: var(--ink-secondary);
+      margin: 0 0 14px;
     }
 
     /* Square Cropper */
@@ -228,16 +311,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
-      margin-top: 14px;
+      gap: 16px;
+      margin-top: 12px;
     }
 
     #cropCanvas {
-      border: 4px solid var(--ink);
-      border-radius: 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 4px;
       cursor: grab;
       touch-action: none;
-      background: #222;
+      background: #232321;
       max-width: 100%;
     }
 
@@ -248,7 +331,7 @@
     /* Main Studio Layout */
     .studio-layout {
       display: grid;
-      grid-template-columns: 330px 1fr;
+      grid-template-columns: 300px 1fr;
       gap: 20px;
       align-items: start;
     }
@@ -261,42 +344,86 @@
 
     /* Left Sidebar Sliders */
     .tools-panel {
-      background: var(--card);
+      background: var(--surface);
       border-radius: var(--radius);
       padding: 18px;
-      box-shadow: var(--shadow);
-      border: 2px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
     }
 
     .slider-item {
-      margin-bottom: 11px;
-      padding: 6px 8px;
-      border-radius: 10px;
-      background: #f9faff;
-      border: 1px solid #eceff8;
+      margin-bottom: 10px;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      border: 1px solid transparent;
+      transition: border-color 0.15s ease;
+    }
+
+    .slider-item:hover {
+      border-color: var(--border);
     }
 
     .slider-header {
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
-      font-weight: 700;
-      margin-bottom: 4px;
+      align-items: center;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 6px;
     }
 
+    .slider-header span:last-child {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--ink-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Custom Minimal Range Slider */
     input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
       width: 100%;
-      accent-color: var(--pink);
+      height: 4px;
+      background: #dcdad2;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+      display: block;
+      margin: 4px 0 2px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--surface);
+      box-shadow: 0 0 0 1px var(--border-strong);
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--surface);
+      box-shadow: 0 0 0 1px var(--border-strong);
       cursor: pointer;
     }
 
     .tools-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
       margin-top: 16px;
-      padding-top: 12px;
-      border-top: 2px solid var(--border);
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
     }
 
     /* Right Workspace */
@@ -307,11 +434,11 @@
     }
 
     .canvas-card {
-      background: var(--card);
+      background: var(--surface);
       border-radius: var(--radius);
       padding: 18px;
-      box-shadow: var(--shadow);
-      border: 2px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -324,25 +451,45 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .canvas-stage {
+      width: 100%;
+      background: var(--mat);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     #editorCanvas {
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
       aspect-ratio: 1 / 1;
-      border: 4px solid var(--ink);
-      border-radius: 12px;
-      background: #eee;
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      background: #e5e3dd;
+      box-shadow: 0 2px 10px rgba(28, 28, 26, 0.08);
+    }
+
+    .file-meta {
+      margin: 12px 0 0;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--muted);
     }
 
     /* Saved Gallery Strip */
     .gallery-card {
-      background: var(--card);
+      background: var(--surface);
       border-radius: var(--radius);
       padding: 18px;
-      box-shadow: var(--shadow);
-      border: 2px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
     }
 
     .gallery-header {
@@ -350,8 +497,12 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 12px;
+    }
+
+    .gallery-header h3 {
+      margin: 0;
     }
 
     .slots-row {
@@ -367,28 +518,30 @@
     }
 
     .slot-box {
-      border: 2px dashed #cbd3ea;
-      border-radius: 12px;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-sm);
       padding: 6px;
       text-align: center;
-      background: #fafbfe;
-      font-size: 0.78rem;
-      font-weight: 700;
+      background: var(--surface-subtle);
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--muted);
     }
 
     .slot-box.filled {
       border-style: solid;
-      border-color: var(--purple);
-      background: #fff;
+      border-color: var(--border-strong);
+      background: var(--surface);
+      color: var(--ink-secondary);
     }
 
     .slot-box img {
       width: 100%;
       aspect-ratio: 1 / 1;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 3px;
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
     }
 
     .slot-placeholder {
@@ -397,16 +550,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #9aa3bf;
-      font-size: 1.2rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
     }
 
     /* 4x4 Warhol Grid Builder */
     .grid-builder-wrap {
       display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 24px;
+      grid-template-columns: 310px 1fr;
+      gap: 28px;
       align-items: start;
+      margin-top: 16px;
     }
 
     @media (max-width: 900px) {
@@ -418,60 +573,77 @@
     .fav-pick-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 12px 0;
+      gap: 8px;
+      margin: 10px 0 18px;
     }
 
     .fav-option {
-      border: 3px solid var(--border);
-      border-radius: 12px;
-      padding: 4px;
-      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 5px;
+      background: var(--surface-subtle);
+      color: var(--ink-secondary);
       position: relative;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .fav-option:hover {
+      border-color: var(--border-strong);
     }
 
     .fav-option.selected {
-      border-color: var(--pink);
-      box-shadow: 0 0 0 3px rgba(255, 46, 147, 0.25);
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 1px var(--accent);
+      color: var(--ink);
     }
 
     .fav-option img {
       width: 100%;
       aspect-ratio: 1 / 1;
-      border-radius: 8px;
+      border-radius: 3px;
       display: block;
     }
 
     .fav-badge {
       position: absolute;
-      top: 6px;
-      right: 6px;
-      background: var(--pink);
-      color: #fff;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      font-size: 0.8rem;
+      top: 8px;
+      right: 8px;
+      background: var(--accent);
+      color: #ffffff;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
+      font-weight: 600;
+    }
+
+    .board-stage {
+      background: var(--mat);
+      border-radius: var(--radius-sm);
+      padding: 20px;
     }
 
     .warhol-4x4 {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 4px;
-      background: #111;
+      gap: 3px;
+      background: #1c1c1a;
       padding: 8px;
-      border-radius: 12px;
-      max-width: 540px;
+      border-radius: 3px;
+      max-width: 520px;
       margin: 0 auto;
+      box-shadow: 0 4px 16px rgba(28, 28, 26, 0.12);
     }
 
     .warhol-cell {
       aspect-ratio: 1 / 1;
-      background: #2b2f42;
+      background: #2e2e2b;
       overflow: hidden;
       cursor: pointer;
       position: relative;
@@ -482,13 +654,19 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      transition: opacity 0.12s ease;
+    }
+
+    .warhol-cell:hover img {
+      opacity: 0.9;
     }
 
     /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(20, 24, 40, 0.65);
+      background: rgba(28, 28, 26, 0.45);
+      backdrop-filter: blur(2px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -501,12 +679,13 @@
     }
 
     .modal-box {
-      background: #fff;
-      border-radius: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
       max-width: 720px;
       width: 100%;
       padding: 24px;
-      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+      box-shadow: var(--shadow-md);
       text-align: center;
       max-height: 90vh;
       overflow-y: auto;
@@ -515,45 +694,47 @@
     .compare-grid {
       display: flex;
       justify-content: center;
-      gap: 14px;
+      gap: 12px;
       flex-wrap: wrap;
       margin: 18px 0;
     }
 
     .compare-item {
-      width: 145px;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      padding: 8px;
-      background: #fafbfe;
+      width: 140px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 7px;
+      background: var(--surface-subtle);
+      color: var(--ink-secondary);
     }
 
     .compare-item.highlight-new {
-      border: 3px solid var(--pink);
-      background: #fff5fa;
+      border: 1.5px solid var(--accent);
+      background: var(--surface);
+      color: var(--ink);
     }
 
     .compare-item img {
       width: 100%;
       aspect-ratio: 1 / 1;
-      border-radius: 8px;
+      border-radius: 3px;
       display: block;
       margin-bottom: 6px;
     }
 
-    /* 5th-Grade Helper Popup (Right-Click + TTS) */
+    /* Helper Tooltip (Right-Click + TTS) */
     #kidHelperPopup {
       position: fixed;
       z-index: 2000;
-      background: #fffef0;
-      border: 3px solid var(--ink);
-      border-radius: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
       padding: 12px 14px;
-      max-width: 300px;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+      max-width: 290px;
+      box-shadow: var(--shadow-md);
       display: none;
-      font-size: 0.95rem;
-      line-height: 1.4;
+      font-size: 0.875rem;
+      line-height: 1.45;
       color: var(--ink);
     }
 
@@ -566,30 +747,39 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 6px;
-      font-weight: 800;
-      color: var(--purple);
-      font-size: 0.85rem;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      color: var(--ink-secondary);
+      font-size: 0.74rem;
       text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .tts-btn {
-      background: var(--yellow);
+      background: var(--surface-subtle);
       color: var(--ink);
-      border: 2px solid var(--ink);
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      border: 1px solid var(--border-strong);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .tts-btn:hover {
+      background: var(--surface-hover);
     }
 
     .helper-close {
       background: transparent;
       color: var(--muted);
-      font-size: 1rem;
-      padding: 2px 6px;
+      font-size: 0.95rem;
+      padding: 2px 5px;
+    }
+
+    .helper-close:hover {
+      color: var(--ink);
     }
   </style>
 </head>
@@ -597,13 +787,28 @@
 
   <header data-help="This is the top bar of your Pop Art Studio. It shows your name and lets you switch students.">
     <div class="brand" data-help="Welcome to Pop Art Studio! Here you will turn your photo into colorful art inspired by Andy Warhol.">
-      <span>🎨 Pop Art Studio</span>
+      <span class="brand-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+        </svg>
+      </span>
+      <span>Pop Art Studio</span>
       <span class="brand-badge">Warhol Edition</span>
     </div>
     <div class="header-controls">
       <span id="studentBadge" class="pill-info" style="display:none;" data-help="This shows which student is signed in right now.">Student</span>
-      <span class="pill-info" data-help="Right-click on any button, slider, or picture to see what it does and hear it read out loud!">🖱️ Right-click anything for help</span>
-      <button id="switchUserBtn" class="btn-header" style="display:none;" data-help="Click here if you are a different student and need to pick your own teacher and name.">🔄 Switch Student</button>
+      <span class="pill-info" data-help="Right-click on any button, slider, or picture to see what it does and hear it read out loud!">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        Right-click any control for help
+      </span>
+      <button id="switchUserBtn" class="btn-header" style="display:none;" data-help="Click here if you are a different student and need to pick your own teacher and name.">Switch Student</button>
     </div>
   </header>
 
@@ -611,25 +816,25 @@
     <!-- SCREEN 1: TEACHER & STUDENT ROSTER SELECTION -->
     <section id="screenRoster" class="screen">
       <div class="card center-card">
-        <h1 data-help="Follow these steps to find your name on your teacher's class list.">👋 Welcome to Pop Art Studio!</h1>
-        <p id="rosterStatus" style="color:var(--muted);" data-help="We are loading your teacher and class list from the class spreadsheet.">Loading class list from Google Sheets...</p>
+        <h1 data-help="Follow these steps to find your name on your teacher's class list.">Select Student</h1>
+        <p id="rosterStatus" class="subtitle" data-help="We are loading your teacher and class list from the class spreadsheet.">Loading class roster from Google Sheets...</p>
 
         <div id="teacherStep" style="display:none;">
-          <h2 data-help="Click the button with your teacher's name on it.">Step 1: Pick Your Teacher</h2>
+          <h2 data-help="Click the button with your teacher's name on it.">Step 1: Choose Your Teacher</h2>
           <div id="teacherButtons" class="button-grid"></div>
         </div>
 
         <div id="studentStep" style="display:none; margin-top:24px;">
-          <h2 id="studentStepTitle" data-help="Now click the button with your first name and last initial.">Step 2: Pick Your Name</h2>
+          <h2 id="studentStepTitle" data-help="Now click the button with your first name and last initial.">Step 2: Choose Your Name</h2>
           <div id="studentButtons" class="button-grid"></div>
-          <div style="margin-top:16px;">
-            <button id="backToTeachersBtn" class="btn-neutral" data-help="Go back to pick a different teacher.">⬅ Back to Teachers</button>
+          <div style="margin-top:20px;">
+            <button id="backToTeachersBtn" class="btn-neutral" data-help="Go back to pick a different teacher.">Back to Teachers</button>
           </div>
         </div>
 
-        <div id="sheetErrorBox" style="display:none; margin-top:18px; padding:14px; background:#fff3f3; border:2px solid #ffb3b3; border-radius:12px;">
-          <p style="margin:0 0 10px;"><strong>Could not load the Google Sheet.</strong> Make sure the spreadsheet sharing is set to <em>"Anyone with the link can view"</em> and has a tab named <code>masterList</code>.</p>
-          <button id="retrySheetBtn" class="btn-secondary" data-help="Try loading the class spreadsheet again.">Try Again</button>
+        <div id="sheetErrorBox" style="display:none; margin-top:18px; padding:14px; background:var(--danger-bg); border:1px solid var(--danger-border); color:var(--danger-ink); border-radius:var(--radius-sm); font-size:0.875rem;">
+          <p style="margin:0 0 10px;"><strong>Unable to load class roster.</strong> Verify that spreadsheet sharing is set to <em>"Anyone with the link can view"</em> and contains a tab named <code>masterList</code>.</p>
+          <button id="retrySheetBtn" class="btn-secondary" data-help="Try loading the class spreadsheet again.">Retry</button>
         </div>
       </div>
     </section>
@@ -637,21 +842,28 @@
     <!-- SCREEN 2: ENTER FIRST NAME & UPLOAD IMAGE -->
     <section id="screenUpload" class="screen">
       <div class="card center-card">
-        <h1 data-help="First check your first name, then choose a picture from your computer or tablet.">📸 Step 1: Your Name & Photo</h1>
-        <p style="color:var(--muted);" data-help="Your first name is used to name all of your saved art files automatically.">Confirm or type your first name below:</p>
+        <h1 data-help="First check your first name, then choose a picture from your computer or tablet.">Name &amp; Source Photo</h1>
+        <p class="subtitle" data-help="Your first name is used to name all of your saved art files automatically.">Confirm your first name for automatic file naming:</p>
         <div class="input-row">
-          <input type="text" id="firstNameInput" placeholder="Enter your first name" data-help="Type your first name here. Every picture you save will start with this name!" />
+          <input type="text" id="firstNameInput" placeholder="First name" data-help="Type your first name here. Every picture you save will start with this name!" />
         </div>
 
         <div class="upload-box" data-help="Click the button inside this box to pick any photo from your device.">
-          <p style="font-size:1.1rem; font-weight:700; margin-bottom:12px;">Choose a portrait photo (any picture format works!)</p>
+          <p>Select a portrait image to begin</p>
           <input type="file" id="imageUploadInput" accept="image/*" style="display:none;" />
-          <button id="choosePhotoBtn" class="btn-primary" data-help="Click here to open your files and pick a photo to turn into Pop Art.">📁 Choose My Photo</button>
+          <button id="choosePhotoBtn" class="btn-primary" data-help="Click here to open your files and pick a photo to turn into Pop Art.">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Choose Photo
+          </button>
         </div>
 
-        <div id="resumeExistingWrap" style="display:none; margin-top:20px; padding-top:16px; border-top:2px solid var(--border);">
-          <p style="color:var(--muted); margin-bottom:10px;">You already have a saved original photo!</p>
-          <button id="resumeStudioBtn" class="btn-success" data-help="Jump right back into the Pop Art editor with the photo you already uploaded.">🎨 Go Back to My Studio</button>
+        <div id="resumeExistingWrap" style="display:none; margin-top:22px; padding-top:18px; border-top:1px solid var(--border);">
+          <p class="subtitle" style="margin-bottom:10px; font-size:0.85rem;">An existing original photo was found for this name.</p>
+          <button id="resumeStudioBtn" class="btn-success" data-help="Jump right back into the Pop Art editor with the photo you already uploaded.">Resume Studio Session</button>
         </div>
       </div>
     </section>
@@ -659,17 +871,19 @@
     <!-- SCREEN 3: SQUARE CROPPING WINDOW -->
     <section id="screenCrop" class="screen">
       <div class="card center-card">
-        <h1 data-help="Andy Warhol prints are squares! Drag and zoom your photo so your face fits nicely inside the square.">✂️ Make Your Photo a Square</h1>
-        <p style="color:var(--muted);">Drag the picture to center it, and use the zoom slider below.</p>
+        <h1 data-help="Andy Warhol prints are squares! Drag and zoom your photo so your face fits nicely inside the square.">Crop to Square</h1>
+        <p class="subtitle">Drag the image to frame your portrait and adjust the zoom scale below.</p>
         <div class="crop-stage-wrap">
           <canvas id="cropCanvas" width="360" height="360" data-help="Drag your photo inside this square box to line up your picture."></canvas>
           <div style="width:320px; max-width:100%;">
-            <label style="font-weight:700; display:block; margin-bottom:6px;">🔍 Zoom Photo</label>
+            <div class="slider-header" style="margin-bottom:6px;">
+              <span>Zoom</span>
+            </div>
             <input type="range" id="cropZoomSlider" min="0.5" max="3" step="0.02" value="1" data-help="Slide left to zoom out, or slide right to zoom in closer on your photo." />
           </div>
-          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
-            <button id="cancelCropBtn" class="btn-neutral" data-help="Go back and pick a different photo.">Choose Different Photo</button>
-            <button id="confirmCropBtn" class="btn-success" data-help="Save this square picture as your original photo and start adding Warhol colors!">✅ Save Square Original</button>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:4px;">
+            <button id="cancelCropBtn" class="btn-neutral" data-help="Go back and pick a different photo.">Change Photo</button>
+            <button id="confirmCropBtn" class="btn-success" data-help="Save this square picture as your original photo and start adding Warhol colors!">Confirm Crop</button>
           </div>
         </div>
       </div>
@@ -680,12 +894,12 @@
       <div class="studio-layout">
         <!-- LEFT SIDEBAR: 9 ADJUSTMENT SLIDERS + APPLY + SAVE -->
         <aside class="tools-panel" data-help="These are your Pop Art color sliders! Move them to change how your photo looks.">
-          <h3 style="margin-bottom:12px;" data-help="Move any slider below to change colors, brightness, or cartoon poster effects.">🎛️ Color Sliders</h3>
+          <h3 data-help="Move any slider below to change colors, brightness, or cartoon poster effects.">Adjustments</h3>
           <div id="slidersContainer"></div>
 
           <div class="tools-actions">
-            <button id="applyBtn" class="btn-secondary" data-help="Click Apply to lock in your current slider changes as the new starting point, so you can keep adjusting the sliders even more!">✨ Apply</button>
-            <button id="saveVariationBtn" class="btn-success" data-help="Click Save when your picture looks awesome and different! It will check your art and save it to your Warhol collection.">💾 Save</button>
+            <button id="applyBtn" class="btn-secondary" data-help="Click Apply to lock in your current slider changes as the new starting point, so you can keep adjusting the sliders even more!">Apply</button>
+            <button id="saveVariationBtn" class="btn-success" data-help="Click Save when your picture looks awesome and different! It will check your art and save it to your Warhol collection.">Save</button>
           </div>
         </aside>
 
@@ -694,20 +908,28 @@
           <div class="canvas-card">
             <div class="canvas-toolbar">
               <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <button id="reopenOriginalBtn" class="btn-neutral" data-help="Click here anytime to reload your plain original photo and reset all sliders back to normal.">🖼️ Reopen original.png</button>
-                <button id="changeBasePhotoBtn" class="btn-neutral" data-help="Upload and crop a brand-new starting photo.">📷 New Photo</button>
+                <button id="reopenOriginalBtn" class="btn-neutral" data-help="Click here anytime to reload your plain original photo and reset all sliders back to normal.">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                    <path d="M3 3v5h5"></path>
+                  </svg>
+                  Reopen original.png
+                </button>
+                <button id="changeBasePhotoBtn" class="btn-neutral" data-help="Upload and crop a brand-new starting photo.">New Photo</button>
               </div>
-              <button id="unlockGridBtn" class="btn-primary" disabled data-help="Save 6 different Warhol versions first! Once you have 6, this button unlocks so you can build your 4 by 4 final poster.">🔒 Create 4x4 Grid (Need 6)</button>
+              <button id="unlockGridBtn" class="btn-primary" disabled data-help="Save 6 different Warhol versions first! Once you have 6, this button unlocks so you can build your 4 by 4 final poster.">Create 4×4 Grid (0/6)</button>
             </div>
 
-            <canvas id="editorCanvas" width="500" height="500" data-help="This is your art canvas! Watch your picture change live as you move the sliders on the left."></canvas>
-            <p id="fileNamingHint" style="margin:10px 0 0; font-size:0.88rem; color:var(--muted);" data-help="Shows the file name your original picture is saved under."></p>
+            <div class="canvas-stage">
+              <canvas id="editorCanvas" width="500" height="500" data-help="This is your art canvas! Watch your picture change live as you move the sliders on the left."></canvas>
+            </div>
+            <p id="fileNamingHint" class="file-meta" data-help="Shows the file name your original picture is saved under."></p>
           </div>
 
           <div class="gallery-card" data-help="Here are your saved pictures! You need 6 Warhol versions to unlock the 4 by 4 poster maker.">
             <div class="gallery-header">
-              <h3 style="margin:0;">🖼️ Your Warhol Collection (<span id="savedCountLabel">0</span>/6 Saved)</h3>
-              <span style="font-size:0.85rem; color:var(--muted);">Make each version look bold and different!</span>
+              <h3>Collection (<span id="savedCountLabel">0</span>/6 Saved)</h3>
+              <span style="font-size:0.8rem; color:var(--muted);">Create 6 distinct color variations to unlock the grid layout</span>
             </div>
             <div id="gallerySlots" class="slots-row"></div>
           </div>
@@ -718,28 +940,38 @@
     <!-- SCREEN 5: 4x4 WARHOL GRID BUILDER -->
     <section id="screenGrid" class="screen">
       <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
-          <h1 style="margin:0;" data-help="Pick your 4 favorite Warhol pictures and arrange them in the 4 by 4 grid to make your final masterpiece!">🏆 Final 4x4 Warhol Print Maker</h1>
-          <button id="backToEditorBtn" class="btn-neutral" data-help="Go back to the color sliders if you want to edit your pictures more.">⬅ Back to Editor</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding-bottom:16px; border-bottom:1px solid var(--border);">
+          <div>
+            <h1 style="margin:0;" data-help="Pick your 4 favorite Warhol pictures and arrange them in the 4 by 4 grid to make your final masterpiece!">4×4 Print Layout</h1>
+            <p style="margin:4px 0 0; font-size:0.875rem; color:var(--ink-secondary);">Select 4 variations and arrange them into a 16-tile print.</p>
+          </div>
+          <button id="backToEditorBtn" class="btn-neutral" data-help="Go back to the color sliders if you want to edit your pictures more.">Back to Editor</button>
         </div>
 
         <div class="grid-builder-wrap">
           <div>
-            <h3 data-help="Click 4 of your 6 saved pictures below to pick your 4 favorites.">1. Pick Your 4 Favorites (<span id="favCountLabel">0</span>/4)</h3>
+            <h3 data-help="Click 4 of your 6 saved pictures below to pick your 4 favorites.">1. Select 4 Variations (<span id="favCountLabel">0</span>/4)</h3>
             <div id="favPickerGrid" class="fav-pick-grid"></div>
 
-            <h3 style="margin-top:16px;" data-help="Use these buttons to automatically arrange your 4 favorites in cool patterns, or click any square on the right to change it yourself!">2. Arrange Your 4x4 Grid</h3>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
-              <button class="btn-neutral pattern-btn" data-pattern="diagonal" data-help="Arranges your 4 favorites in a diagonal rainbow pattern.">Diagonal Pattern</button>
-              <button class="btn-neutral pattern-btn" data-pattern="rows" data-help="Puts one favorite on each row of the 4 by 4 grid.">Row Pattern</button>
-              <button class="btn-neutral pattern-btn" data-pattern="columns" data-help="Puts one favorite in each column of the 4 by 4 grid.">Column Pattern</button>
+            <h3 style="margin-top:16px;" data-help="Use these buttons to automatically arrange your 4 favorites in cool patterns, or click any square on the right to change it yourself!">2. Preset Patterns</h3>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+              <button class="btn-neutral pattern-btn" style="padding:6px 10px; font-size:0.8rem;" data-pattern="diagonal" data-help="Arranges your 4 favorites in a diagonal rainbow pattern.">Diagonal</button>
+              <button class="btn-neutral pattern-btn" style="padding:6px 10px; font-size:0.8rem;" data-pattern="rows" data-help="Puts one favorite on each row of the 4 by 4 grid.">Rows</button>
+              <button class="btn-neutral pattern-btn" style="padding:6px 10px; font-size:0.8rem;" data-pattern="columns" data-help="Puts one favorite in each column of the 4 by 4 grid.">Columns</button>
             </div>
-            <p style="font-size:0.88rem; color:var(--muted);">Tip: Click any square in the 4x4 grid to cycle through your 4 favorites!</p>
+            <p style="font-size:0.8rem; color:var(--muted); margin:0 0 18px; line-height:1.4;">Click any individual tile on the preview board to cycle through your 4 selected variations.</p>
 
-            <button id="downloadFinalBtn" class="btn-success" style="width:100%; margin-top:10px;" disabled data-help="Click here to download your finished 4 by 4 Warhol poster as one big picture file!">⬇️ Download Final 4x4 PNG</button>
+            <button id="downloadFinalBtn" class="btn-success" style="width:100%;" disabled data-help="Click here to download your finished 4 by 4 Warhol poster as one big picture file!">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download 4×4 PNG
+            </button>
           </div>
 
-          <div>
+          <div class="board-stage">
             <div id="warhol4x4Board" class="warhol-4x4" data-help="This is your 4 by 4 Pop Art poster! Click any square to switch which of your 4 favorites is in that spot."></div>
           </div>
         </div>
@@ -750,23 +982,29 @@
   <!-- COMPARISON POPUP MODAL -->
   <div id="compareModal" class="modal-backdrop">
     <div class="modal-box">
-      <h2 id="compareModalTitle">👀 Check Your Artwork!</h2>
-      <p id="compareModalQuestion" style="font-size:1.05rem; color:var(--ink);"></p>
+      <h2 id="compareModalTitle">Verify Variation</h2>
+      <p id="compareModalQuestion" class="subtitle" style="margin-bottom:14px;"></p>
       <div id="compareThumbnails" class="compare-grid"></div>
-      <div style="display:flex; justify-content:center; gap:14px; margin-top:18px; flex-wrap:wrap;">
-        <button id="compareCancelBtn" class="btn-neutral" data-help="Go back to the sliders so you can change the colors more.">Cancel (Keep Adjusting)</button>
-        <button id="compareConfirmBtn" class="btn-success" data-help="Yes! Save this picture to my Warhol collection.">Yes, Save My Image!</button>
+      <div style="display:flex; justify-content:center; gap:10px; margin-top:18px; flex-wrap:wrap;">
+        <button id="compareCancelBtn" class="btn-neutral" data-help="Go back to the sliders so you can change the colors more.">Keep Adjusting</button>
+        <button id="compareConfirmBtn" class="btn-success" data-help="Yes! Save this picture to my Warhol collection.">Save Variation</button>
       </div>
     </div>
   </div>
 
-  <!-- 5TH-GRADE HELPER POPUP (RIGHT-CLICK + TEXT-TO-SPEECH) -->
+  <!-- HELPER POPUP (RIGHT-CLICK + TEXT-TO-SPEECH) -->
   <div id="kidHelperPopup" role="tooltip">
     <div class="helper-top">
-      <span>💡 What does this do?</span>
+      <span>Control Guide</span>
       <div style="display:flex; align-items:center; gap:4px;">
-        <button id="speakHelpBtn" class="tts-btn" title="Listen out loud">🔊 Listen</button>
-        <button id="closeHelpBtn" class="helper-close" title="Close">✖</button>
+        <button id="speakHelpBtn" class="tts-btn" title="Listen out loud">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          Listen
+        </button>
+        <button id="closeHelpBtn" class="helper-close" title="Close" aria-label="Close">&times;</button>
       </div>
     </div>
     <div id="kidHelperText"></div>
@@ -819,7 +1057,7 @@
         localStorage.setItem(key, value);
         return true;
       } catch (e) {
-        alert("Browser storage is full! Try switching students or clearing old browser data.");
+        alert("Browser storage is full. Try switching students or clearing old browser data.");
         return false;
       }
     }
@@ -861,7 +1099,7 @@
       const statusEl = document.getElementById("rosterStatus");
       const errBox = document.getElementById("sheetErrorBox");
       statusEl.style.display = "block";
-      statusEl.textContent = "Loading class list from Google Sheets...";
+      statusEl.textContent = "Loading class roster from Google Sheets...";
       errBox.style.display = "none";
 
       try {
@@ -929,7 +1167,7 @@
       const students = state.rosterRows.filter(r => r.teacher === teacher);
       const container = document.getElementById("studentButtons");
       container.innerHTML = "";
-      document.getElementById("studentStepTitle").textContent = `Step 2: Pick Your Name (${teacher})`;
+      document.getElementById("studentStepTitle").textContent = `Step 2: Choose Your Name (${teacher})`;
 
       students.forEach(stu => {
         const btn = document.createElement("button");
@@ -954,9 +1192,9 @@
       const badge = document.getElementById("studentBadge");
       const switchBtn = document.getElementById("switchUserBtn");
       if (state.identity) {
-        badge.style.display = "inline-block";
-        badge.textContent = `👤 ${state.identity.label} (${state.identity.teacher})`;
-        switchBtn.style.display = "inline-block";
+        badge.style.display = "inline-flex";
+        badge.textContent = `${state.identity.label} · ${state.identity.teacher}`;
+        switchBtn.style.display = "inline-flex";
       } else {
         badge.style.display = "none";
         switchBtn.style.display = "none";
@@ -990,7 +1228,7 @@
     function openCropperWithFile(file) {
       const rawName = document.getElementById("firstNameInput").value.trim();
       if (!rawName) {
-        alert("Please enter your first name before uploading a photo!");
+        alert("Please enter your first name before uploading a photo.");
         document.getElementById("firstNameInput").focus();
         return;
       }
@@ -1027,8 +1265,8 @@
       const h = cropImg.height * scale;
       ctx.drawImage(cropImg, cropOffsetX, cropOffsetY, w, h);
 
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.55)";
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+      ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(canvas.width / 3, 0); ctx.lineTo(canvas.width / 3, canvas.height);
       ctx.moveTo((canvas.width * 2) / 3, 0); ctx.lineTo((canvas.width * 2) / 3, canvas.height);
@@ -1107,8 +1345,10 @@
         return;
       }
 
-      document.getElementById("fileNamingHint").textContent =
-        `Original file: ${keyOriginal()} • Next save: ${keyWarhol(getNextWarholSlot())}`;
+      const savedCount = getSavedWarholCount();
+      document.getElementById("fileNamingHint").textContent = savedCount >= 6
+        ? `Source: ${keyOriginal()} · All 6 variations saved`
+        : `Source: ${keyOriginal()} · Next save: ${keyWarhol(getNextWarholSlot())}`;
 
       const img = new Image();
       img.onload = () => {
@@ -1283,13 +1523,13 @@
 
       if (nextSlot === 1) {
         titleEl.textContent = `Compare Before Saving (${keyWarhol(1)})`;
-        questionEl.textContent = "Look at your original picture and your new picture side by side. Are you sure your new image is different enough from the original?";
+        questionEl.textContent = "Compare your new variation with the original image. Confirm that the color treatment is clearly distinct before saving.";
       } else {
         titleEl.textContent = `Compare Before Saving (${keyWarhol(nextSlot)})`;
-        questionEl.textContent = "Make sure your new image is different from your original picture AND different from your earlier saved Warhol images!";
+        questionEl.textContent = "Compare your new variation against the original and prior saves to ensure each version is distinct.";
       }
 
-      thumbsEl.appendChild(makeCompareCard("Original Photo", origDataUrl, false));
+      thumbsEl.appendChild(makeCompareCard("Original", origDataUrl, false));
 
       priorImages.forEach(item => {
         thumbsEl.appendChild(makeCompareCard(item.label, item.url, false));
@@ -1304,10 +1544,10 @@
 
           const totalSaved = getSavedWarholCount();
           if (totalSaved < 6) {
-            alert(`Awesome! Saved as ${keyWarhol(nextSlot)}.\n\nNow let's reopen your original photo so you can create Warhol image #${totalSaved + 1}!`);
+            alert(`Saved as ${keyWarhol(nextSlot)}.\n\nReopening your original photo to create variation #${totalSaved + 1}.`);
             openEditorWithOriginal();
           } else {
-            alert(`Woohoo! You saved all 6 Warhol images!\n\nThe "Create 4x4 Grid" button is now unlocked!`);
+            alert(`All 6 variations have been saved.\n\nThe "Create 4×4 Grid" layout builder is now unlocked.`);
             openEditorWithOriginal();
           }
         }
@@ -1319,7 +1559,7 @@
     function makeCompareCard(caption, src, isNew) {
       const div = document.createElement("div");
       div.className = "compare-item" + (isNew ? " highlight-new" : "");
-      div.innerHTML = `<img src="${src}" alt="${caption}" /><div style="font-size:0.78rem; font-weight:700; word-break:break-all;">${caption}</div>`;
+      div.innerHTML = `<img src="${src}" alt="${caption}" /><div style="font-family:var(--font-mono); font-size:0.72rem; word-break:break-all;">${caption}</div>`;
       return div;
     }
 
@@ -1335,7 +1575,7 @@
       origBox.onclick = openEditorWithOriginal;
       origBox.innerHTML = origUrl
         ? `<img src="${origUrl}" alt="Original" /><div>Original</div>`
-        : `<div class="slot-placeholder">?</div><div>Original</div>`;
+        : `<div class="slot-placeholder">—</div><div>Original</div>`;
       container.appendChild(origBox);
 
       let count = 0;
@@ -1348,8 +1588,8 @@
           ? `Saved Warhol image #${i} (${keyWarhol(i)}).`
           : `Empty slot #${i}. Adjust the sliders and click Save to fill this spot!`);
         box.innerHTML = url
-          ? `<img src="${url}" alt="Warhol ${i}" /><div>Warhol #${i}</div>`
-          : `<div class="slot-placeholder">#${i}</div><div>Empty</div>`;
+          ? `<img src="${url}" alt="Warhol ${i}" /><div>0${i}</div>`
+          : `<div class="slot-placeholder">0${i}</div><div>Empty</div>`;
         container.appendChild(box);
       }
 
@@ -1357,10 +1597,10 @@
       const unlockBtn = document.getElementById("unlockGridBtn");
       if (count >= 6) {
         unlockBtn.disabled = false;
-        unlockBtn.textContent = "🎉 Create 4x4 Grid";
+        unlockBtn.textContent = "Create 4×4 Grid";
       } else {
         unlockBtn.disabled = true;
-        unlockBtn.textContent = `🔒 Create 4x4 Grid (${count}/6)`;
+        unlockBtn.textContent = `Create 4×4 Grid (${count}/6)`;
       }
     }
 
@@ -1391,7 +1631,7 @@
         btn.innerHTML = `
           <img src="${url}" alt="Warhol ${i}" />
           ${isSelected ? `<span class="fav-badge">${favIdx + 1}</span>` : ""}
-          <div style="font-size:0.78rem; margin-top:4px;">Warhol #${i}</div>
+          <div style="font-family:var(--font-mono); font-size:0.72rem;">Var 0${i}</div>
         `;
         btn.onclick = () => toggleFavorite(i);
         container.appendChild(btn);
@@ -1467,7 +1707,7 @@
 
     async function downloadFinal4x4Image() {
       if (state.selectedFavorites.length !== 4) {
-        alert("Please pick 4 favorite Warhol pictures first!");
+        alert("Please select 4 variations first.");
         return;
       }
 
@@ -1500,7 +1740,7 @@
     }
 
     /*****************************************************************
-     * 9. 5TH-GRADE RIGHT-CLICK HELPER POPUP + TEXT-TO-SPEECH
+     * 9. RIGHT-CLICK HELPER POPUP + TEXT-TO-SPEECH
      *****************************************************************/
     const helperPopup = document.getElementById("kidHelperPopup");
     const helperTextEl = document.getElementById("kidHelperText");
@@ -1520,7 +1760,6 @@
       helperTextEl.textContent = text;
       helperPopup.classList.add("visible");
 
-      // Keep popup inside viewport
       const pad = 14;
       const rect = helperPopup.getBoundingClientRect();
       let left = clientX + 12;
@@ -1542,7 +1781,6 @@
       }
     }
 
-    // Right-click anywhere shows 5th-grade popup
     document.addEventListener("contextmenu", e => {
       const helpEl = findHelpElement(e.target);
       if (helpEl) {
@@ -1551,7 +1789,6 @@
       }
     });
 
-    // Left-clicking outside the popup closes it
     document.addEventListener("mousedown", e => {
       if (e.button === 0 && helperPopup.classList.contains("visible")) {
         if (!helperPopup.contains(e.target)) {
@@ -1562,7 +1799,6 @@
 
     document.getElementById("closeHelpBtn").onclick = hideKidHelper;
 
-    // Text-to-Speech Speaker Button
     document.getElementById("speakHelpBtn").onclick = () => {
       const msg = helperTextEl.textContent;
       if (!msg) return;
@@ -1570,10 +1806,10 @@
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(msg);
         utterance.rate = 0.95;
-        utterance.pitch = 1.05;
+        utterance.pitch = 1.0;
         window.speechSynthesis.speak(utterance);
       } else {
-        alert("Sorry, your browser does not support read-aloud speech.");
+        alert("Your browser does not support read-aloud speech.");
       }
     };
 
